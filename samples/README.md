@@ -3,6 +3,9 @@
 ## Butterfly
 ![Butterfly](./butterfly.svg?raw=true)
 
+<details>
+  <summary>Click to show code</summary>
+  
 ```VBA
 Sub butterfly()
   Dim WingSize As Single, wingColors As Variant, Size As Long, i As Long
@@ -46,5 +49,62 @@ Sub butterfly()
 End Sub
 
 ```
+</details>
 
-## 
+## Badge
+![Badge](./badge.svg?raw=true)
+
+<details>
+  <summary>Click to show code</summary>
+  
+```VBA
+Sub Badge()
+  Dim points As Long, i As Long, length As Long
+
+  points = 6
+  length = 100
+
+  With turtle
+    .Clear
+    .PenUp
+    .PointInDirection 0
+    .FillType = ttSolid
+    .FillColor = ttgold
+    .PenColor = ttInvisible
+    .Center
+    For i = 1 To points
+      .Move length
+      .Point
+      .PenDown
+      .Ellipse length / points
+      .PenUp
+      .Move -length
+      .Turnright 360 / points / 2
+      .Move length * 0.6
+      .Point
+      .Move -length * 0.6
+      .Turnright 360 / points / 2
+    Next i
+    .ClosePoints
+    .PenColor = ttWhite
+    .PenSize = length / points / 2
+    .FillColor = ttInvisible
+    .PointInDirection 90
+    .PenDown
+    .Ellipse 2 * length * 0.6 - length / points / 3
+    .PenUp
+    .FontSize = length / 3
+    .FontColor = ttWhite
+    .FontName = "Playbill"
+    .WriteText "SHERIFF"
+    .Group
+    .FillColor = ttInvisible
+    .PenColor = ttBlack
+    .PenSize = 1
+  End With
+
+  turtle.GoToXY 20, 20
+End Sub  
+```
+</details>
+
