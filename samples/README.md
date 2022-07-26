@@ -176,3 +176,18 @@ Sub flower2()
 End Sub
 ```
 </details>
+
+
+
+## Sierpinski triangle
+![Sierpinski triangle](./sierpinski.svg?raw=true)
+
+<details>
+  <summary>Click to show code</summary>
+  
+```VBA
+
+```
+</details>
+  
+  
