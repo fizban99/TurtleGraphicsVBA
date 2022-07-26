@@ -108,3 +108,71 @@ End Sub
 ```
 </details>
 
+## Flower with hexagons
+![Flower with hexagons](./flower1.svg?raw=true)
+
+<details>
+  <summary>Click to show code</summary>
+  
+```VBA
+Sub flower1()
+  Dim j As Long, i As Long, sides As Long, petals As Long, color As ttcolors
+
+  sides = 6
+  petals = 10
+  color = ttOrange
+  
+  With turtle
+    .Center
+    .Clear
+    .FillColor = color
+    .PenDown
+    For j = 1 To petals
+      .Turnright 360 / petals
+      For i = 1 To sides
+        .Move 300 / sides
+        .Turnright 360 / sides
+      Next i
+    Next j
+    .PenUp
+    .FillColor = ttInvisible
+    .PenDown
+  End With
+End Sub
+```
+</details>
+
+
+## Flower with curved hexagons
+![Flower with curved hexagons](./flower2.svg?raw=true)
+
+<details>
+  <summary>Click to show code</summary>
+  
+```VBA
+Sub flower2()
+  Dim j As Long, i As Long, sides As Long, petals As Long, color As ttcolors
+
+  sides = 6
+  petals = 10
+  color = ttOrange
+  
+  With turtle
+    .Center
+    .Clear
+    .FillColor = color
+    .PenDown
+    For j = 1 To petals
+      .Turnright 360 / petals
+      For i = 1 To sides
+        .MoveCurved 300 / sides, 110 / sides, ttaxis
+        .Turnright 360 / sides
+      Next i
+    Next j
+    .PenUp
+    .FillColor = ttInvisible
+    .PenDown
+  End With
+End Sub
+```
+</details>
