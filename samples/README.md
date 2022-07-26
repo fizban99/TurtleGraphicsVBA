@@ -186,7 +186,49 @@ End Sub
   <summary>Click to show code</summary>
   
 ```VBA
+Sub sierpinski(length As Long, depth As Long)
+  Dim i As Integer
 
+  With turtle
+    If depth = 0 Then
+      For i = 0 To 2
+        .Move length
+        .TurnLeft 120
+      Next i
+      Exit Sub
+    End If
+    sierpinski length / 2, depth - 1
+    .Move length / 2
+    sierpinski length / 2, depth - 1
+    .Move -length / 2
+    .TurnLeft 60
+    .Move length / 2
+    .Turnright 60
+    sierpinski length / 2, depth - 1
+    .TurnLeft 60
+    .Move -length / 2
+    .Turnright 60
+  End With
+End Sub
+
+
+Sub draw_triangle()
+  Dim depth As Long
+  
+  depth = 3
+
+  With turtle
+    .Reset
+    .DrawingMode = ttNoScreenRefresh
+    .FillType = ttSolid
+    .FillColor = ttyellow
+    .y = .y + 100
+    .x = .x - 100
+    sierpinski 200, depth
+    .PenUp
+    .FillColor = ttInvisible
+  End With
+End Sub
 ```
 </details>
   
