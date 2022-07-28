@@ -232,4 +232,56 @@ End Sub
 ```
 </details>
   
+
+## Koch snowflake
+![Koch snowflake](./koch.svg?raw=true)
+
+<details>
+  <summary>Click to show code</summary>
   
+```VBA
+Sub Koch(depth As Long, length As Single)
+  With turtle
+    If depth = 1 Then
+      .Move length
+      Exit Sub
+    End If
+    Koch depth - 1, length / 3
+    .Turnleft 60
+    Koch depth - 1, length / 3
+    .Turnright 120
+    Koch depth - 1, length / 3
+    .Turnleft 60
+    Koch depth - 1, length / 3
+  End With
+End Sub
+
+
+Sub draw_snowflake()
+  Dim i As Long, depth As Long
+  
+  depth = 5
+  
+  With turtle
+    .Reset
+    .FillType = ttSolid
+    .FillColor = ttyellow
+    .PenUp
+    .x = .x - 100
+    .y = .y - 70
+    .PenDown
+    For i = 1 To 3
+      Koch depth, 200
+      .Turnright 120
+    Next i
+    .PenUp
+    .FillColor = ttInvisible
+  End With
+End Sub
+
+
+
+```
+</details>
+
+
