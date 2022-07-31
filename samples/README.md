@@ -54,7 +54,7 @@ End Sub
 </details>
 
 ## Badge
-![Badge](./badge.svg?raw=true)
+![Badge](./turtle-graphics-badge.svg?raw=true)
 
 <details>
   <summary>Click to show code</summary>
@@ -111,7 +111,7 @@ End Sub
 </details>
 
 ## Flower with hexagons
-![Flower with hexagons](./flower1.svg?raw=true)
+![Flower with hexagons](./turtle-graphics-flower1.svg?raw=true)
 
 <details>
   <summary>Click to show code</summary>
@@ -146,7 +146,7 @@ End Sub
 
 
 ## Flower with curved hexagons
-![Flower with curved hexagons](./flower2.svg?raw=true)
+![Flower with curved hexagons](./turtle-graphics-flower2.svg?raw=true)
 
 <details>
   <summary>Click to show code</summary>
@@ -182,7 +182,7 @@ End Sub
 
 
 ## Sierpinski triangle
-![Sierpinski triangle](./sierpinski.svg?raw=true)
+![Sierpinski triangle](./turtle-graphics-sierpinski.svg?raw=true)
 
 <details>
   <summary>Click to show code</summary>
@@ -236,7 +236,7 @@ End Sub
   
 
 ## Koch snowflake
-![Koch snowflake](./koch.svg?raw=true)
+![Koch snowflake](./turtle-graphics-koch.svg?raw=true)
 
 <details>
   <summary>Click to show code</summary>
