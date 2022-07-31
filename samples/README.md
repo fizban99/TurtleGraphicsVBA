@@ -3,7 +3,7 @@ Note: the Turtle Graphic vector emf files exported from the add-in were converte
 
 
 ## Butterfly
-![Butterfly](./butterfly.svg?raw=true)
+![Butterfly](./turtle-graphics-butterfly.svg?raw=true)
 
 <details>
   <summary>Click to show code</summary>
