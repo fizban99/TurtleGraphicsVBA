@@ -287,3 +287,42 @@ End Sub
 </details>
 
 
+## Polyspiral
+![Polyspiral](./turtle-graphics-polyspiral.svg?raw=true)
+
+<details>
+  <summary>Click to show code</summary>
+  
+```VBA
+sub Spiral()
+
+  Dim length, angle, d
+  Dim c
+
+    d = 1
+    
+    length = 300
+    angle = 89
+
+    
+    With turtle
+      .Reset
+      .PenDown
+      .PenSize = 0.5
+      .FillColor = ttSkyBlue
+      Do While length > d
+        .Move length
+        .TurnLeft angle
+        length = length - d
+      Loop
+      .PenUp
+      .Hide
+    End With
+    
+End Sub
+
+
+```
+</details>
+
+
