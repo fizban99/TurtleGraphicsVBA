@@ -369,3 +369,59 @@ End Sub
 ```
 </details>
 
+
+## Concentric mosaic
+
+![Concentric mosaic](./turtle-graphics-concentric-mosaic.svg?raw=true)
+
+<details>
+  <summary>Click to show code</summary>
+  
+```VBA
+Sub concentric()
+  Dim circ As Long, segments As Long, diameter As Long, increment As Long, segment As Long
+  Dim initialSegment As Single, angle As Single, newAngle As Single, levels As Long
+  
+  segments = 32
+  diameter = 225
+  increment = 20
+  levels = 11
+  
+  With turtle
+    .Reset
+    .FillColor = ttCyan
+    For circ = 1 To levels
+      
+      initialSegment = Rnd() * 240 / segments - 120 / segments
+      angle = initialSegment
+      If circ <> levels Then
+        .FillColor = RGB(Rnd() * 255, Rnd() * 255, Rnd() * 255)
+      Else
+        .FillColor = ttwhite
+        segments = 1
+      End If
+      For segment = 1 To segments
+        If segment <> segments Then
+          newAngle = segment * 360 / segments + Rnd() * 240 / segments - 120 / segments
+        Else
+          newAngle = initialSegment
+        End If
+        If segments <> 1 Then
+          .Arc diameter, diameter, angle, newAngle, ttsector
+        Else
+          .Arc diameter, diameter, angle, newAngle, TTARC
+        End If
+        angle = newAngle
+        .FillHueShift 10
+      Next segment
+      diameter = diameter - increment
+      segments = segments - 3
+    Next circ
+  
+  End With
+End Sub
+
+
+```
+</details>
+
