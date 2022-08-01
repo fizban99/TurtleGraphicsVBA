@@ -327,6 +327,7 @@ End Sub
 
 
 ## Coloured Polyspiral
+This one had to be edited in Inkscape to change the stroke cap to rounded corners, since that feature is unavailable to VBA
 ![Coloured Polyspiral](./turtle-graphics-polyspiral2.svg?raw=true)
 
 <details>
