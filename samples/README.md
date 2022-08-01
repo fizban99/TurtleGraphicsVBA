@@ -326,3 +326,45 @@ End Sub
 </details>
 
 
+## Coloured Polyspiral
+![Coloured Polyspiral](./turtle-graphics-polyspiral2.svg?raw=true)
+
+<details>
+  <summary>Click to show code</summary>
+  
+```VBA
+Sub Spiral()
+  ' Based on https://juliagraphics.github.io/Luxor.jl/v2.2/turtle/
+  Dim length, angle, d
+  Dim i
+
+    d = 0.75
+    
+    length = 5
+    angle = 89.5
+
+    
+    With turtle
+      .CanvasColor = ttBlack
+      .Reset
+      .DrawingMode = ttNoScreenRefresh
+      .Hide
+      .PenSize = 1
+      .PenColor = ttCyan
+      For i = 1 To 400
+        .PenDown
+        .Move length
+        .Turnright angle
+        length = length + d
+        .PenHueShift 1
+        .PenUp
+      Next i
+      .Hide
+    End With
+    
+End Sub
+
+
+```
+</details>
+
