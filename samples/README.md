@@ -425,3 +425,108 @@ End Sub
 ```
 </details>
 
+## Batik Flower
+
+![Batik flower](./turtle-graphics-batik-flower.svg?raw=true)
+
+<details>
+  <summary>Click to show code</summary>
+  
+```VBA
+Sub batik_flower()
+  Dim sides As Long, color As ttColors, i As Long
+  Dim length As Single, R As Single, interior_sides As Long
+  Dim interior_length As Single
+  
+  sides = 8
+  R = 50
+  interior_sides = 8
+  
+  
+  interior_length = R / 1.5
+  With turtle
+    .Reset
+    .PenUp
+    .PenColor = ttInvisible
+    'Pistils
+    .TurnLeft 90
+    .Move R
+    .TurnRight 45
+    .FillColor = RGB(0, 128, 0)
+    .Pendown
+    length = R * (2 * Sin([Pi()] / 4))
+    For i = 1 To 4
+      .Movecurved R / 2, 0, ttLine
+      .TurnRight 90
+      .Movecurved length, length, ttCusp
+      .TurnRight 90
+      .Movecurved R / 2, 0, ttLine
+      .TurnLeft 90
+    Next i
+    .PenUp
+    
+    'Petals
+    length = R * (2 * Sin([Pi()] / sides))
+    .PointInDirection 90
+    .Center
+    .TurnLeft 360 / (2 * sides)
+    .Move R
+    .TurnRight 90 + 360 / (2 * sides)
+    .FillColor = RGB(191, 191, 0)
+    .Pendown
+    For i = 1 To sides
+     .Movecurved length, length / 1.5, ttHalfEllipse
+     .TurnRight 360 / sides
+    Next i
+    .PenUp
+  
+    
+    .TurnLeft 90 + 360 / (2 * sides)
+    .Move -R
+
+
+    .FillColor = ttBlack
+    .TurnLeft 360 / 32
+    star 16, R * 1.1
+    .TurnRight 360 / 32
+    .FillColor = vbWhite
+   
+    For i = 1 To interior_sides
+        .Pendown
+        .Movecurved interior_length, interior_length / 7, ttPetalfd
+        .Movecurved -interior_length, interior_length / 7, ttPetalbk
+        .TurnLeft 360 / interior_sides
+        .PenUp
+    Next i
+    .Pendown
+    .FillColor = ttwhite
+    .PenColor = ttBlack
+    .PenSize = 3
+    .ellipse interior_length / 2.5
+    .PenUp
+    .Hide
+  End With
+  
+  
+End Sub
+
+Sub star(ByVal points As Long, ByVal length As Single)
+  Dim i As Long
+  With turtle
+    For i = 1 To points
+        .Move length
+        .Point
+        .Move -length
+        .TurnRight 360 / points / 2
+        .Move length * 0.6
+        .Point
+        .Move -length * 0.6
+        .TurnRight 360 / points / 2
+    Next i
+    .ClosePoints
+  End With
+End Sub
+
+```
+</details>
+
