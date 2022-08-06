@@ -1,10 +1,9 @@
 # TurtleGraphicsVBA
-Turtle Graphics using VBA in Excel. An add-in created for the purpose of teaching basic programming to young students. The advantage of using Excel is that if Excel is already on the computer, no additional installation is required besides these two files. The graphics generated are in vector format. They can be exported to emf and converted to svg using inkscape, for example or online through https://convertio.co/emf-svg/.
-
-
-https://user-images.githubusercontent.com/13463439/179361846-f0ffedd4-76ff-4b72-a0cb-e866c45c2b1f.mp4
+Turtle Graphics using VBA in Excel. An add-in created for the purpose of teaching basic programming to young students. The advantage of using Excel is that if Excel is already on the computer, no additional installation is required besides these two files. The graphics generated are in vector format. They can easily copied and resized in any Office application and they can be exported to emf and converted to svg using Inkscape, for example.
 
 Note that the TurtleGraphics.xlam file is locked for visualization so that VBA errors made by students do not jump to lines in that module. To actually edit or view the module, the password is "turtle".
+
+You can see some sample drawings in the [samples](https://github.com/fizban99/TurtleGraphicsVBA/tree/main/samples) folder.
 
 ## Commands
 
@@ -72,15 +71,11 @@ Note that the TurtleGraphics.xlam file is locked for visualization so that VBA e
 
 ### `FontWeight`
 
-### `Height` (Read Only)
-
 ### `LineStyle`
 
 ### `PenColor`
 
 ### `PenSize`
-
-### `Width` (Read Only)
 
 ### `X`
 
