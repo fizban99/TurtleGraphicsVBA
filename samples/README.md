@@ -10,7 +10,7 @@ Note: the Turtle Graphic vector emf files exported from the add-in were converte
   
 ```VBA
 Sub butterfly()
-  Dim WingSize As Single, wingColors As Variant, Size As Long, i As Long
+  Dim WingSize As Single, wingColors As Variant, size As Long, i As Long
   
   turtle.Reset
   turtle.DrawingMode = ttNoScreenRefresh
@@ -18,32 +18,34 @@ Sub butterfly()
   
   wingColors = Array(ttred, ttblue, ttmagenta, ttyellow, ttgreen, ttgold)
   With turtle:
-    For Size = 100 To 50 Step -10
+    .PenColor = ttInvisible
+    For size = 100 To 50 Step -10
       
-      .FillColor = wingColors(Size / 10 - 5)
-      .PenDown
+      .FillColor = wingColors(size / 10 - 5)
+      .Pendown
       For i = 1 To 4
         If i > 2 Then
-          WingSize = Size * 0.7
+          WingSize = size * 0.7
         Else
-          WingSize = Size
+          WingSize = size
         End If
-        .MoveCurved WingSize, WingSize / 4, ttPetalFd
-        .MoveCurved -WingSize, -WingSize / 4, ttPetalFd
+        .Movecurved WingSize, WingSize / 4, ttPetalfd
+        .Movecurved -WingSize, WingSize / 4, ttPetalbk
         .TurnLeft 90
       Next i
       .PenUp
-    Next Size
+    Next size
     .PointInDirection 0
-    .Turnright 17
+    .TurnRight 17
     .FillColor = ttInvisible
-    .PenDown
-    .MoveCurved 100, 95, ttchord1
+    .PenColor = ttBlack
+    .Pendown
+    .Movecurved 100, 95, ttQuarterEllipse
     .PenUp
     .Move -100
     .TurnLeft 17 * 2
-    .PenDown
-    .MoveCurved 100, -95, ttchord1
+    .Pendown
+    .Movecurved 100, -95, ttQuarterEllipse
     .PenUp
     .Move -100
     
@@ -182,6 +184,8 @@ End Sub
 
 
 ## Sierpinski triangle
+Based on <https://stackoverflow.com/questions/25772750/sierpinski-triangle-recursion-using-turtle-graphics>
+
 ![Sierpinski triangle](./turtle-graphics-sierpinski.svg?raw=true)
 
 <details>
@@ -327,7 +331,10 @@ End Sub
 
 
 ## Colored Polyspiral
+
+Based on <https://juliagraphics.github.io/Luxor.jl/v2.2/turtle/>
 This one had to be edited in Inkscape to change the stroke cap to rounded corners, since that feature is unavailable to VBA
+
 ![Coloured Polyspiral](./turtle-graphics-polyspiral2.svg?raw=true)
 
 <details>
@@ -427,8 +434,10 @@ End Sub
 
 ## Batik Flower
 
-![Batik flower](./turtle-graphics-batik-flower.svg?raw=true)
+Inspired by <https://www.mdpi.com/2076-3417/9/11/2383/htm> "Auto-Generation System Based on Fractal Geometry for Batik Pattern Design"
 
+![Batik flower](./turtle-graphics-batik-flower.svg?raw=true)
+  
 <details>
   <summary>Click to show code</summary>
   
