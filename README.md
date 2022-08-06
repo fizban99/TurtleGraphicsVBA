@@ -5,6 +5,9 @@ Note that the TurtleGraphics.xlam file is locked for visualization so that VBA e
 
 You can see some sample drawings in the [samples](https://github.com/fizban99/TurtleGraphicsVBA/tree/main/samples) folder.
 
+![Main screen](./img/main-screen.png?raw=true)
+
+
 ## Commands
 
 ### `Arc(DiameterAcross As Double, DiameterFrontBack As Variant, StartAngle As Double, EndAngle As Double, ArcType As ttArcType) `
