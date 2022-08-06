@@ -333,7 +333,6 @@ End Sub
 ## Colored Polyspiral
 
 Based on <https://juliagraphics.github.io/Luxor.jl/v2.2/turtle/>
-This one had to be edited in Inkscape to change the stroke cap to rounded corners, since that feature is unavailable to VBA
 
 ![Coloured Polyspiral](./turtle-graphics-polyspiral2.svg?raw=true)
 
