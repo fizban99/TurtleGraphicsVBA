@@ -14,7 +14,7 @@ End Sub
 
 
 Sub butterfly()
-  Dim WingSize As Single, wingColors As Variant, size As Long, i As Long
+  Dim WingSize As Double, wingColors As Variant, size As Long, i As Long
   
   turtle.Reset
   turtle.DrawingMode = ttNoScreenRefresh
@@ -26,15 +26,15 @@ Sub butterfly()
     For size = 100 To 50 Step -10
       
       .FillColor = wingColors(size / 10 - 5)
-      .Pendown
+      .PenDown
       For i = 1 To 4
         If i > 2 Then
           WingSize = size * 0.7
         Else
           WingSize = size
         End If
-        .Movecurved WingSize, WingSize / 4, ttPetalfd
-        .Movecurved -WingSize, WingSize / 4, ttPetalbk
+        .MoveCurved WingSize, WingSize / 4, ttPetalfd
+        .MoveCurved -WingSize, WingSize / 4, ttPetalbk
         .TurnLeft 90
       Next i
       .PenUp
@@ -43,13 +43,13 @@ Sub butterfly()
     .TurnRight 17
     .FillColor = ttInvisible
     .PenColor = ttBlack
-    .Pendown
-    .Movecurved 100, 95, ttQuarterEllipse
+    .PenDown
+    .MoveCurved 100, 95, ttQuarterEllipse
     .PenUp
     .Move -100
     .TurnLeft 17 * 2
-    .Pendown
-    .Movecurved 100, -95, ttQuarterEllipse
+    .PenDown
+    .MoveCurved 100, -95, ttQuarterEllipse
     .PenUp
     .Move -100
     
@@ -57,7 +57,7 @@ Sub butterfly()
 End Sub
 
 Sub butterfly2()
-  Dim WingSize As Single, wingColors As Variant, size As Long, i As Long
+  Dim WingSize As Double, wingColors As Variant, size As Long, i As Long
   
   turtle.Reset
   turtle.DrawingMode = ttNoScreenRefresh
@@ -70,15 +70,15 @@ Sub butterfly2()
     For size = 100 To 5 Step -5
       
       .FillHueShift 17
-      .Pendown
+      .PenDown
       For i = 1 To 4
         If i > 2 Then
           WingSize = size * 0.7
         Else
           WingSize = size
         End If
-        .Movecurved WingSize, WingSize / 4, ttPetalfd
-        .Movecurved -WingSize, WingSize / 4, ttPetalbk
+        .MoveCurved WingSize, WingSize / 4, ttPetalfd
+        .MoveCurved -WingSize, WingSize / 4, ttPetalbk
         .TurnLeft 90
       Next i
       .PenUp
@@ -87,16 +87,16 @@ Sub butterfly2()
     .TurnRight 17
     .FillColor = ttInvisible
     .PenColor = ttBlack
-    .Pendown
-    .Movecurved 100, 95, ttQuarterEllipse
+    .PenDown
+    .MoveCurved 100, 95, ttQuarterEllipse
     .PenUp
     .Move -100
     .TurnLeft 17 * 2
-    .Pendown
-    .Movecurved 100, -95, ttQuarterEllipse
+    .PenDown
+    .MoveCurved 100, -95, ttQuarterEllipse
     .PenUp
     .Move -100
-    
+    .PointInDirection 90
   End With
 End Sub
 
@@ -117,8 +117,8 @@ Sub Badge()
     For i = 1 To points
       .Move length
       .Point
-      .Pendown
-      .ellipse length / points
+      .PenDown
+      .Ellipse length / points
       .PenUp
       .Move -length
       .TurnRight 360 / points / 2
@@ -132,8 +132,8 @@ Sub Badge()
     .PenSize = length / points / 2
     .FillColor = ttInvisible
     .PointInDirection 90
-    .Pendown
-    .ellipse 2 * length * 0.6 - length / points / 3
+    .PenDown
+    .Ellipse 2 * length * 0.6 - length / points / 3
     .PenUp
     .FontSize = length / 3
     .FontColor = ttwhite
@@ -161,17 +161,17 @@ Sub flower2()
     .Center
     .Clear
     .FillColor = color
-    .Pendown
+    .PenDown
     For j = 1 To petals
       .TurnRight 360 / petals
       For i = 1 To sides
-        .Movecurved 300 / sides, 110 / sides, ttHalfEllipse
+        .MoveCurved 300 / sides, 110 / sides, ttHalfEllipse
         .TurnRight 360 / sides
       Next i
     Next j
     .PenUp
     .FillColor = ttInvisible
-    .Pendown
+    .PenDown
   End With
 End Sub
 
@@ -186,7 +186,7 @@ Sub flower1()
     .Center
     .Clear
     .FillColor = color
-    .Pendown
+    .PenDown
     For j = 1 To petals
       .TurnRight 360 / petals
       For i = 1 To sides
@@ -196,7 +196,7 @@ Sub flower1()
     Next j
     .PenUp
     .FillColor = ttInvisible
-    .Pendown
+    .PenDown
   End With
 End Sub
 
@@ -247,7 +247,7 @@ Sub draw_triangle()
   End With
 End Sub
 
-Sub star(ByVal points As Long, ByVal length As Single)
+Sub star(ByVal points As Long, ByVal length As Double, ByVal interior_length)
   Dim i As Long
   With turtle
     For i = 1 To points
@@ -255,9 +255,9 @@ Sub star(ByVal points As Long, ByVal length As Single)
         .Point
         .Move -length
         .TurnRight 360 / points / 2
-        .Move length * 0.6
+        .Move interior_length
         .Point
-        .Move -length * 0.6
+        .Move -interior_length
         .TurnRight 360 / points / 2
     Next i
     .ClosePoints
@@ -266,34 +266,48 @@ End Sub
 
 
 Sub flower3()
-  Dim sides As Long, color As ttColors, i As Long
-  Dim length As Single, R As Single
+  Dim sides As Long, color As ttColors, i As Long, layer As Long
+  Dim length As Double, R1 As Double, R2 As Double
   
-  sides = 24
-  length = 100
+  sides = 20
+  R2 = 200
   
-  R = 20
+  R1 = 20
   With turtle
     .Reset
     .PenUp
+    .DrawingMode = ttNoScreenRefresh
     .FillColor = ttyellow
-    For i = 1 To sides
-      .Move R
-      .Pendown
-      .Movecurved length, length / 5, ttPetalbk
-      .Movecurved -length, length / 5, ttPetalfd
-      .PenUp
-      .Move -R
-      .TurnRight 360 / sides
-    Next i
+    .PenColor = ttorange
+    .PenSize = 3
+    .FillTransparency = 0
+    .PenTransparency = 0
+    
+    For layer = R2 + 150 To R2 Step -50
+      length = .getSideLength(layer, sides)
+      For i = 1 To sides
+        .Move R1
+        .PenDown
+        .MoveCurved length, length ^ 2 / 500, ttPetalfd
+        .MoveCurved -length, length ^ 2 / 500, ttPetalbk
+        .PenUp
+        .Move -R1
+        .TurnRight 360 / sides
+      Next i
+      .TurnRight 360 / sides / 2
+    Next layer
+    .PenDown
+    .PenSize = 6
+    .Ellipse R1 * 2 + 3, R1 * 2 + 3
+    .PenUp
   End With
 End Sub
 
 
 Sub batik_flower()
   Dim sides As Long, color As ttColors, i As Long
-  Dim length As Single, R As Single, interior_sides As Long
-  Dim interior_length As Single
+  Dim length As Double, R As Double, interior_sides As Long
+  Dim interior_length As Double
   
   sides = 8
   R = 50
@@ -303,6 +317,7 @@ Sub batik_flower()
   interior_length = R / 1.5
   With turtle
     .Reset
+    .DrawingMode = ttNoScreenRefresh
     .PenUp
     .PenColor = ttInvisible
     'Pistils
@@ -310,29 +325,29 @@ Sub batik_flower()
     .Move R
     .TurnRight 45
     .FillColor = RGB(0, 128, 0)
-    .Pendown
-    length = R * (2 * Sin([Pi()] / 4))
+    .PenDown
+    length = .getSideLength(R, 4)
     For i = 1 To 4
-      .Movecurved R / 2, 0, ttLine
+      .MoveCurved R / 2, 0, ttLine
       .TurnRight 90
-      .Movecurved length, length, ttCusp
+      .MoveCurved length, length, ttCusp
       .TurnRight 90
-      .Movecurved R / 2, 0, ttLine
+      .MoveCurved R / 2, 0, ttLine
       .TurnLeft 90
     Next i
     .PenUp
     
     'Petals
-    length = R * (2 * Sin([Pi()] / sides))
+    length = .getSideLength(R, sides)
     .PointInDirection 90
     .Center
     .TurnLeft 360 / (2 * sides)
     .Move R
     .TurnRight 90 + 360 / (2 * sides)
     .FillColor = RGB(191, 191, 0)
-    .Pendown
+    .PenDown
     For i = 1 To sides
-     .Movecurved length, length / 1.5, ttHalfEllipse
+     .MoveCurved length, length / 1.5, ttHalfEllipse
      .TurnRight 360 / sides
     Next i
     .PenUp
@@ -344,22 +359,22 @@ Sub batik_flower()
 
     .FillColor = ttBlack
     .TurnLeft 360 / 32
-    star 16, R * 1.1
+    star 16, R * 1.1, R * 1.1 * 0.6
     .TurnRight 360 / 32
     .FillColor = vbWhite
    
     For i = 1 To interior_sides
-        .Pendown
-        .Movecurved interior_length, interior_length / 7, ttPetalfd
-        .Movecurved -interior_length, interior_length / 7, ttPetalbk
+        .PenDown
+        .MoveCurved interior_length, interior_length / 7, ttPetalfd
+        .MoveCurved -interior_length, interior_length / 7, ttPetalbk
         .TurnLeft 360 / interior_sides
         .PenUp
     Next i
-    .Pendown
+    .PenDown
     .FillColor = ttwhite
     .PenColor = ttBlack
     .PenSize = 3
-    .ellipse interior_length / 2.5
+    .Ellipse interior_length / 2.5
     .PenUp
     .Hide
   End With
@@ -367,7 +382,7 @@ Sub batik_flower()
   
 End Sub
 
-Sub Koch(depth As Long, length As Single)
+Sub Koch(depth As Long, length As Double)
   With turtle
     If depth = 1 Then
       .Move length
@@ -385,18 +400,19 @@ End Sub
 
 
 Sub draw_snowflake()
-  Dim i As Long, depth As Long
+  Dim i As Long, depth As Long, t As Single
   
   depth = 5
-  
+  t = Timer()
   With turtle
     .Reset
+    .DrawingMode = ttNoScreenRefresh
     .FillType = ttSolid
     .FillColor = ttyellow
     .PenUp
     .x = .x - 100
     .y = .y - 70
-    .Pendown
+    .PenDown
     For i = 1 To 3
       Koch depth, 200
       .TurnRight 120
@@ -404,6 +420,7 @@ Sub draw_snowflake()
     .PenUp
     .FillColor = ttInvisible
   End With
+  Debug.Print Timer() - t
 End Sub
 
 
@@ -420,20 +437,20 @@ Dim i
     
     With turtle
       .Reset
+      .Hide
       .CanvasColor = ttBlack
       .DrawingMode = ttNoScreenRefresh
       .Hide
       .PenSize = 1
       .PenColor = ttcyan
       For i = 1 To 400
-        .Pendown
+        .PenDown
         .Move length
         .TurnRight angle
         length = length + d
         .PenHueShift 1
         .PenUp
       Next i
-      .Hide
     End With
     
 End Sub
@@ -452,7 +469,7 @@ Sub PolySpiral()
     
     With turtle
       .Reset
-      .Pendown
+      .PenDown
       .PenSize = 0.5
       .FillColor = ttSkyBlue
       Do While length > d
@@ -479,7 +496,7 @@ Dim i
     
     With turtle
       .PenSize = 1
-      .Pendown
+      .PenDown
       .Reset
       .DrawingMode = ttNoScreenRefresh
       .Hide
@@ -497,7 +514,7 @@ End Sub
 
 Sub concentric()
   Dim circ As Long, segments As Long, diameter As Long, increment As Long, segment As Long
-  Dim initialSegment As Single, angle As Single, newAngle As Single, levels As Long
+  Dim initialSegment As Double, angle As Double, newAngle As Double, levels As Long
   
   segments = 32
   diameter = 225
@@ -537,5 +554,103 @@ Sub concentric()
   End With
 End Sub
 
+
+'Inspired from Code a Pookkalam | Python programming https://www.youtube.com/watch?v=FYEuQUF37G0
+Sub pookkalam1()
+  Dim i As Long, j As Long, length As Double
+  Dim white_circle_length As Double
+
+  With turtle
+    .Reset
+    .DrawingMode = ttNoScreenRefresh
+    'external star
+    .PenUp
+    .FillColor = RGB(135, 16, 0)
+    .PenColor = ttInvisible
+    star 24, 200, 190
+    
+    'orange circle filled with red
+    .PenDown
+    .PenColor = RGB(250, 138, 49)
+    .PenSize = 3
+    .FillColor = RGB(236, 28, 0)
+    .Ellipse 360, 360
+    
+    'dark orange star
+    .FillColor = RGB(241, 93, 0)
+    .PenColor = ttInvisible
+    .PenUp
+    star 24, 160, 152
+    
+    'orange circle
+    .FillColor = RGB(245, 169, 0)
+    .PenDown
+    .Ellipse 280, 280
+    
+    'yellow star
+    .FillColor = RGB(248, 241, 0)
+    .PenUp
+    star 24, 120, 115
+    
+    ' 12 hexagons
+    
+    .PenColor = RGB(136, 66, 0)
+    .PointInDirection 90
+    .PenDown
+    length = .getSideLength(180, 6) / 2
+    .FillColor = ttInvisible
+    For j = 1 To 12
+      For i = 1 To 6
+        .Move length
+        .TurnRight 360 / 6
+      Next i
+      .PenUp
+      .TurnRight 360 / 12
+      .PenDown
+    Next j
+  
+    'white circle
+    .Center
+    .FillColor = ttwhite
+    .PenColor = ttInvisible
+    .PenDown
+    white_circle_length = (length - 15) * 2
+    .Ellipse white_circle_length, white_circle_length
+    
+    'green star
+    .PenUp
+    length = (white_circle_length - 15) / 8
+    .FillColor = RGB(8, 106, 0)
+    star 24, length * 3, length * 3 - 3
+    
+    'orange internal circle
+    .FillColor = RGB(245, 169, 0)
+    .PenDown
+    .Ellipse length * 4.5, length * 4.5
+  
+    'yellow internal circle
+    .FillColor = RGB(248, 241, 0)
+    .PenDown
+    .Ellipse length * 3, length * 3
+    
+    'curved radials
+    .PointInDirection 22.5
+    
+    Dim stepsForward As Double
+
+    stepsForward = white_circle_length / 2 - 2.5
+    .FillColor = ttInvisible
+    .PenColor = RGB(136, 66, 0)
+    For i = 1 To 15
+      .MoveBezier stepsForward, -45, 0.5 * stepsForward, 135, 0.7 * stepsForward
+      .FillColor = .PenColor
+      .Ellipse 5
+      .FillColor = ttInvisible
+      .MoveBezier -stepsForward, -45, 0.5 * stepsForward, 135, 0.7 * stepsForward
+      .TurnRight 360 / 15
+    Next i
+    .PenUp
+  End With
+End Sub
 
 

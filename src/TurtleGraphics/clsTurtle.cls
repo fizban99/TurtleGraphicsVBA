@@ -107,7 +107,7 @@ Public Enum ttLineStyle
 End Enum
 
 Public Enum ttDrawingMode
-  ttScreenRefresh = 1
+  ttscreenrefresh = 1
   ttNoScreenRefresh = 2
 End Enum
  
@@ -126,10 +126,10 @@ Public Enum ttFillType
   ttSolid = 1
 End Enum
 
-Dim PenX As Single
-Dim PenY As Single
-Dim InitialPenX As Single
-Dim InitialPenY As Single
+Dim PenX As Double
+Dim PenY As Double
+Dim InitialPenX As Double
+Dim InitialPenY As Double
 Dim TurtleImage As Shape
 Dim Canvas As Chart
 Dim CanvasShape As Shape
@@ -139,7 +139,7 @@ Dim nAngle As Double
 Dim PolyPoints As FreeformBuilder
 Dim tempPoly As Shape
 Dim RefreshLines As Long
-Dim SAoP() As Single
+Dim SAoP() As Variant
 Dim PolyNodes As Long
 Dim IsCurvedPoly As Boolean
 Dim BufLimit As Long
@@ -147,6 +147,8 @@ Dim NumLines As Long
 Dim penHue As Integer, penLuminosity As Integer, penSaturation As Integer
 Dim fillHue As Integer, fillLuminosity As Integer, fillSaturation As Integer
 
+Public cFillTransparency As Double
+Public cPenTransparency As Double
 Public PenSize As Double
 Dim cPenColor As ttColors
 Public DrawingMode As ttDrawingMode
@@ -203,43 +205,43 @@ Public Function InitTurtle(ByVal CanvasName As String, ByVal TurtleName As Strin
   FontWeight = ttFWNormal
   FillColor = ttInvisible
   RefreshLines = 10
-  DrawingMode = ttScreenRefresh
+  DrawingMode = ttscreenrefresh
 End Function
 
-Private Sub createSAoPIfNotExists(ByVal x As Single, ByVal y As Single, Optional nodes = 1)
+Private Sub createSAoPIfNotExists(ByVal x As Double, ByVal y As Double, Optional nodes = 1)
     If PolyNodes = 0 Then
       BufLimit = 1000
-      ReDim SAoP(1 To 2, 1 To BufLimit)
-      SAoP(1, 1) = x
-      SAoP(2, 1) = y
+      ReDim SAoP(1 To BufLimit)
+      SAoP(1) = Array(x, y)
       PolyNodes = 1
     End If
     If PolyNodes + nodes > BufLimit Then
       BufLimit = BufLimit + 1000
-      ReDim Preserve SAoP(1 To 2, 1 To BufLimit)
+      ReDim Preserve SAoP(1 To BufLimit)
     End If
 End Sub
 
-Public Sub Move(ByVal steps As Double)
+
+
+Public Sub Move(ByVal Steps As Double)
 '
 ' Add a Line to the drawing
   
 
-  Dim newX As Single, newY As Single, line As Shape, i As Long
+  Dim newX As Double, newY As Double, line As Shape, i As Long
   
 
-  newX = PenX + Math.Cos((nAngle - INITIAL_ANGLE) * PI / 180) * steps
-  newY = PenY + Math.Sin((nAngle - INITIAL_ANGLE) * PI / 180) * steps
+  newX = PenX + Math.Cos((nAngle - INITIAL_ANGLE) * PI / 180) * Steps
+  newY = PenY + Math.Sin((nAngle - INITIAL_ANGLE) * PI / 180) * Steps
   
   NumLines = NumLines + 1
   If IsPenDown Then
     IsCurvedPoly = False
     createSAoPIfNotExists PenX, PenY
     PolyNodes = PolyNodes + 1
-    SAoP(1, PolyNodes) = newX
-    SAoP(2, PolyNodes) = newY
+    SAoP(PolyNodes) = Array(newX, newY)
        
-    If DrawingMode = ttScreenRefresh Then
+    If DrawingMode = ttscreenrefresh Then
       RecreatePoly
     End If
   End If
@@ -248,32 +250,38 @@ Public Sub Move(ByVal steps As Double)
   RepositionTurtle
 End Sub
 
+
+
 Private Sub RecreatePoly()
-  Dim tempSAoP() As Single, i As Long
+  Dim i As Long, previous_size As Long
   
 
   If Not (tempPoly Is Nothing) Then
+    'it is much faster to recreate the polyline
+    'than to adding nodes with nodes.insert
     tempPoly.Delete
     Set tempPoly = Nothing
   End If
   
-  ReDim tempSAoP(1 To PolyNodes, 1 To 2)
-  For i = 1 To PolyNodes
-    tempSAoP(i, 1) = SAoP(1, i)
-    tempSAoP(i, 2) = SAoP(2, i)
-  Next i
+  'store previous safearray size
+  previous_size = UBound(SAoP)
+  ReDim Preserve SAoP(1 To PolyNodes)
   If IsCurvedPoly Then
-    Set tempPoly = Canvas.Shapes.AddCurve(tempSAoP)
+    Set tempPoly = Canvas.Shapes.AddCurve(SAoP)
   Else
-      Set tempPoly = Canvas.Shapes.AddPolyline(tempSAoP)
+    Set tempPoly = Canvas.Shapes.AddPolyline(SAoP)
   End If
   FormatShape tempPoly, False
   If NumLines > RefreshLines Or PolyNodes < RefreshLines And PolyNodes > 2 Then
     DoEvents
     NumLines = 0
   End If
-
+  'restore previous safearray size
+  ReDim Preserve SAoP(1 To previous_size)
 End Sub
+
+
+
 
 Public Sub Reset()
   Me.Clear
@@ -281,7 +289,7 @@ Public Sub Reset()
   Me.Center
   Me.Show
   Me.PenDown
-  Me.DrawingMode = ttScreenRefresh
+  Me.DrawingMode = ttscreenrefresh
   Me.PenSize = 1
   Me.FillColor = ttInvisible
   Me.PenColor = ttBlack
@@ -325,6 +333,15 @@ Public Sub PenUp()
         tempPoly.Delete
       End If
       Set tempPoly = Nothing
+      ' if first point and last one look like the same up to
+      ' the 7th decimal, make them the same
+      If Round(SAoP(PolyNodes)(0), 7) = Round(SAoP(1)(0), 7) Then
+        SAoP(PolyNodes)(0) = SAoP(1)(0)
+      End If
+      If Round(SAoP(PolyNodes)(1), 7) = Round(SAoP(1)(1), 7) Then
+        SAoP(PolyNodes)(1) = SAoP(1)(1)
+      End If
+
       RecreatePoly
       FormatShape tempPoly
       PolyNodes = 0
@@ -356,10 +373,12 @@ End Sub
 Private Sub FormatShape(shp As Shape, Optional bFill As Boolean = True)
   With shp
     .line.ForeColor.rgb = PenColor
+    .line.Transparency = cPenTransparency
     If FillColor <> ttInvisible And bFill And .nodes.Count > 2 Then
       .Fill.ForeColor.rgb = FillColor
       .Fill.Visible = msoTrue
       .Fill.Solid
+      .Fill.Transparency = cFillTransparency
     Else
       If .Fill.Visible <> msoFalse Then
         .Fill.Visible = msoFalse
@@ -561,7 +580,7 @@ Public Sub Ellipse(DiameterAcross As Double, Optional DiameterFrontBack)
   End If
 End Sub
 
-Public Sub Arc(ByVal DiameterAcross As Single, ByVal DiameterFrontBack As Single, ByVal StartAngle As Single, ByVal EndAngle As Single, ArcType As ttArcType)
+Public Sub Arc(ByVal DiameterAcross As Double, ByVal DiameterFrontBack As Double, ByVal StartAngle As Double, ByVal EndAngle As Double, ArcType As ttArcType)
   Dim shp As Shape
   If IsPenDown Then
     If ArcType = TTARC Then
@@ -674,16 +693,16 @@ Dim ReturnValue As Long
 
 End Function
 
-Private Sub arcCircle(ByVal steps As Single, ByVal radius As Single)
-      Dim xe As Single, ye As Single, positive As Boolean
-      Dim xc As Single, yc As Single
+Private Sub arcCircle(ByVal Steps As Double, ByVal radius As Double)
+      Dim xe As Double, ye As Double, positive As Boolean
+      Dim xc As Double, yc As Double
       
-      xe = PenX + Math.Cos((nAngle - INITIAL_ANGLE) * [Pi()] / 180) * steps          ' x-end
-      ye = PenY + Math.Sin((nAngle - INITIAL_ANGLE) * [Pi()] / 180) * steps
-      If Abs(radius) <= Abs(steps) / 2 Then
+      xe = PenX + Math.Cos((nAngle - INITIAL_ANGLE) * [Pi()] / 180) * Steps          ' x-end
+      ye = PenY + Math.Sin((nAngle - INITIAL_ANGLE) * [Pi()] / 180) * Steps
+      If Abs(radius) <= Abs(Steps) / 2 Then
         Err.Raise vbObjectError + 513, "Turtle Graphics", _
            "Radius has to be greater than half the steps." + vbNewLine + _
-           "Radius: " + Str(radius) + " Steps: " + Str(steps)
+           "Radius: " + Str(radius) + " Steps: " + Str(Steps)
       ElseIf radius > 0 Then
         positive = True
       Else
@@ -693,8 +712,8 @@ Private Sub arcCircle(ByVal steps As Single, ByVal radius As Single)
       getCenterOfCircle PenX, PenY, xe, ye, radius, positive, xc, yc
       
       'from https://stackoverflow.com/questions/734076/how-to-best-approximate-a-geometrical-arc-with-a-bezier-curve
-      Dim ax As Single, ay As Single, bx As Single, by As Single
-      Dim q1 As Single, q2 As Single, k2 As Single, x2 As Single, y2 As Single, x3 As Single, y3 As Single
+      Dim ax As Double, ay As Double, bx As Double, by As Double
+      Dim q1 As Double, q2 As Double, k2 As Double, x2 As Double, y2 As Double, x3 As Double, y3 As Double
       ax = PenX - xc
       ay = PenY - yc
       bx = xe - xc
@@ -712,18 +731,15 @@ Private Sub arcCircle(ByVal steps As Single, ByVal radius As Single)
         createSAoPIfNotExists PenX, PenY, 3
         
         PolyNodes = PolyNodes + 1
-        SAoP(1, PolyNodes) = x2
-        SAoP(2, PolyNodes) = y2
+        SAoP(PolyNodes) = Array(x2, y2)
         
         PolyNodes = PolyNodes + 1
-        SAoP(1, PolyNodes) = x3
-        SAoP(2, PolyNodes) = y3
+        SAoP(PolyNodes) = Array(x3, y3)
         
         PolyNodes = PolyNodes + 1
-        SAoP(1, PolyNodes) = xe
-        SAoP(2, PolyNodes) = ye
-        
-        If DrawingMode = ttScreenRefresh Then
+        SAoP(PolyNodes) = Array(xe, ye)
+       
+        If DrawingMode = ttscreenrefresh Then
           RecreatePoly
         End If
       End If
@@ -733,10 +749,10 @@ Private Sub arcCircle(ByVal steps As Single, ByVal radius As Single)
 End Sub
 
 
-Sub MoveCurved(ByVal steps As Single, ByVal radius As Single, _
+Sub MoveCurved(ByVal Steps As Double, ByVal radius As Double, _
     Optional curveType As ttCurveType = ttHalfEllipse)
-  Dim EllipseAngle As Single, w As Single, stepsForward As Single
-  Dim angle1 As Single, angle2 As Single, originalAngle As Single
+  Dim EllipseAngle As Double, w As Double, StepsForward As Double
+  Dim angle1 As Double, angle2 As Double, originalAngle As Double
   
    
   If Not IsCurvedPoly And PolyNodes > 0 And IsPenDown Then
@@ -745,13 +761,13 @@ Sub MoveCurved(ByVal steps As Single, ByVal radius As Single, _
   End If
   originalAngle = nAngle
   'Treat steps < 0 as a rotation
-  If steps < 0 Then
+  If Steps < 0 Then
     nAngle = nAngle + 180
-    steps = -steps
+    Steps = -Steps
   End If
   
   If curveType = ttHalfEllipse Then
-    w = steps / 2
+    w = Steps / 2
     MoveTangent w, radius, 0, 0
     If radius > 0 Then
       nAngle = nAngle + 90
@@ -769,18 +785,18 @@ Sub MoveCurved(ByVal steps As Single, ByVal radius As Single, _
 
   ElseIf curveType = ttPetalfd Or curveType = ttPetalbk Then
       If curveType = ttPetalfd Then
-        w = steps * 0.6
+        w = Steps * 0.6
         angle1 = 45
         angle2 = 0
       Else
-        w = steps * 0.4
+        w = Steps * 0.4
         angle1 = 0
         angle2 = -45
       End If
       
       MoveTangent w, radius, angle1, 0
     
-      w = steps - w
+      w = Steps - w
       
       If radius > 0 Then
         nAngle = nAngle + 90
@@ -796,19 +812,19 @@ Sub MoveCurved(ByVal steps As Single, ByVal radius As Single, _
         nAngle = nAngle + 90
       End If
   ElseIf curveType = ttQuarterEllipse Then
-      stepsForward = Sqr(steps ^ 2 - radius ^ 2)
-      EllipseAngle = Math.Atn(radius / stepsForward) / [Pi()] * 180
+      StepsForward = Sqr(Steps ^ 2 - radius ^ 2)
+      EllipseAngle = Math.Atn(radius / StepsForward) / [Pi()] * 180
       nAngle = nAngle + EllipseAngle
-      MoveTangent stepsForward, radius, 0, 0
+      MoveTangent StepsForward, radius, 0, 0
   ElseIf curveType = ttArcCircle Then
-      arcCircle steps, radius
+      arcCircle Steps, radius
   ElseIf curveType = ttCusp Then
       nAngle = nAngle - 90
-      MoveTangent radius, -steps / 2, 90, 0, 0.55, 0.55
-      MoveTangent -radius, steps / 2, 90, 0, 0.55, 0.55
+      MoveTangent radius, -Steps / 2, 90, 0, 0.55, 0.55
+      MoveTangent -radius, Steps / 2, 90, 0, 0.55, 0.55
       nAngle = nAngle + 90
   ElseIf curveType = ttLine Then
-      MoveTangent steps, 0, 90, 0, 0, 0
+      MoveTangent Steps, 0, 90, 0, 0, 0
   End If
       
       
@@ -816,34 +832,45 @@ Sub MoveCurved(ByVal steps As Single, ByVal radius As Single, _
   nAngle = originalAngle
 End Sub
 
+
+Public Function getSideLength(ByVal radius As Double, ByVal sides As Long)
+  getSideLength = radius * (2 * Sin([Pi()] / sides))
+End Function
+
+Public Sub getStepsForwardAndLeft(ByVal angle, ByVal radius, StepsForward As Double, StepsLeft As Double)
+  StepsForward = radius * Cos(angle / 180 * [Pi()])
+  StepsLeft = radius * Sin(angle / 180 * [Pi()])
+End Sub
+
+
 Private Sub RepositionTurtle()
-  If TurtleImage.Visible And DrawingMode = ttScreenRefresh Then
+  If TurtleImage.Visible Then
     TurtleImage.Left = PenX - TurtleImage.Width / 2
     TurtleImage.Top = PenY - TurtleImage.Height / 2
   End If
 End Sub
 
 
-Private Sub MoveTangent(ByVal stepsForward As Single, ByVal stepsLeft As Single, _
-        ByVal FirstAngleOffset As Single, ByVal SecondAngleOffset As Single, _
+Private Sub MoveTangent(ByVal StepsForward As Double, ByVal StepsLeft As Double, _
+        ByVal FirstAngleOffset As Double, ByVal SecondAngleOffset As Double, _
         Optional factor1, Optional factor2)
-  Dim ellipse_angle As Single, kappa As Double, chord As Single
-  Dim x As Single, y As Single, xe As Single, ye As Single, ox As Single, oy As Single
-  Dim cx1 As Single, cy1 As Single, cx2 As Single, cy2 As Single
-  Dim originalAngle As Single, restoreAngle As Boolean
+  Dim ellipse_angle As Double, kappa As Double, chord As Double
+  Dim x As Double, y As Double, xe As Double, ye As Double, ox As Double, oy As Double
+  Dim cx1 As Double, cy1 As Double, cx2 As Double, cy2 As Double
+  Dim originalAngle As Double, restoreAngle As Boolean
   
   restoreAngle = False
-  If stepsForward < 0 Then
+  If StepsForward < 0 Then
     originalAngle = nAngle
     nAngle = nAngle + 180
-    stepsForward = -stepsForward
+    StepsForward = -StepsForward
     restoreAngle = True
   End If
   
   kappa = 0.5522848
   
-  ellipse_angle = Math.Atn(stepsLeft / stepsForward) / [Pi()] * 180
-  chord = Sqr(stepsForward ^ 2 + stepsLeft ^ 2)
+  ellipse_angle = Math.Atn(StepsLeft / StepsForward) / [Pi()] * 180
+  chord = Sqr(StepsForward ^ 2 + StepsLeft ^ 2)
   'turn in direction of the ellipse co-vertex
   nAngle = nAngle - ellipse_angle
   x = Me.x
@@ -857,16 +884,16 @@ Private Sub MoveTangent(ByVal stepsForward As Single, ByVal stepsLeft As Single,
   
   'control point offset horizontal
   If IsMissing(factor1) Then
-    ox = stepsForward * kappa
+    ox = StepsForward * kappa
   Else
-    ox = stepsForward * factor1
+    ox = StepsForward * factor1
   End If
   
   'control point offset vertical
   If IsMissing(factor2) Then
-    oy = stepsLeft * kappa
+    oy = StepsLeft * kappa
   Else
-    oy = stepsForward * factor2
+    oy = StepsForward * factor2
   End If
   xe = x + Math.Cos((nAngle - INITIAL_ANGLE) * [Pi()] / 180) * chord          ' x-end
   ye = y + Math.Sin((nAngle - INITIAL_ANGLE) * [Pi()] / 180) * chord
@@ -883,18 +910,15 @@ Private Sub MoveTangent(ByVal stepsForward As Single, ByVal stepsLeft As Single,
     createSAoPIfNotExists x, y, 3
     
     PolyNodes = PolyNodes + 1
-    SAoP(1, PolyNodes) = cx1
-    SAoP(2, PolyNodes) = cy1
+    SAoP(PolyNodes) = Array(cx1, cy1)
     
     PolyNodes = PolyNodes + 1
-    SAoP(1, PolyNodes) = cx2
-    SAoP(2, PolyNodes) = cy2
-    
+    SAoP(PolyNodes) = Array(cx2, cy2)
+   
     PolyNodes = PolyNodes + 1
-    SAoP(1, PolyNodes) = xe
-    SAoP(2, PolyNodes) = ye
+    SAoP(PolyNodes) = Array(xe, ye)
     
-    If DrawingMode = ttScreenRefresh Then
+    If DrawingMode = ttscreenrefresh Then
       RecreatePoly
     End If
 
@@ -910,11 +934,82 @@ Private Sub MoveTangent(ByVal stepsForward As Single, ByVal stepsLeft As Single,
   End If
 End Sub
 
+
+Public Sub MoveBezier(ByVal Steps As Double, angle1 As Double, _
+        ByVal distance1 As Double, ByVal angle2 As Double, _
+        ByVal distance2 As Double)
+  
+  Dim x As Double, y As Double, xe As Double, ye As Double, ox1 As Double, oy1 As Double
+  Dim ox2 As Double, oy2 As Double
+  Dim cx1 As Double, cy1 As Double, cx2 As Double, cy2 As Double
+  Dim originalAngle As Double, restoreAngle As Boolean
+  
+  restoreAngle = False
+  If Steps < 0 Then
+    originalAngle = nAngle
+    nAngle = nAngle + 180
+    Steps = -Steps
+    restoreAngle = True
+  End If
+  
+  x = Me.x
+  y = Me.y
+  
+  ' control points
+  
+  'control points offset horizontal
+  ox1 = distance1 * Cos((nAngle - INITIAL_ANGLE + angle1) * [Pi()] / 180)
+  ox2 = distance2 * Cos((nAngle - INITIAL_ANGLE + angle2) * [Pi()] / 180)
+  
+  'control points offset vertical
+  oy1 = distance1 * Sin((nAngle - INITIAL_ANGLE + angle1) * [Pi()] / 180)
+  oy2 = distance2 * Sin((nAngle - INITIAL_ANGLE + angle2) * [Pi()] / 180)
+  
+  
+  xe = x + Math.Cos((nAngle - INITIAL_ANGLE) * [Pi()] / 180) * Steps          ' x-end
+  ye = y + Math.Sin((nAngle - INITIAL_ANGLE) * [Pi()] / 180) * Steps
+
+  cx1 = x + ox1
+  cy1 = y + oy1
+  
+  cx2 = xe + ox2
+  cy2 = ye + oy2
+  
+    NumLines = NumLines + 1
+  If IsPenDown Then
+    IsCurvedPoly = True
+    createSAoPIfNotExists x, y, 3
+    
+    PolyNodes = PolyNodes + 1
+    SAoP(PolyNodes) = Array(cx1, cy1)
+    
+    PolyNodes = PolyNodes + 1
+    SAoP(PolyNodes) = Array(cx2, cy2)
+   
+    PolyNodes = PolyNodes + 1
+    SAoP(PolyNodes) = Array(xe, ye)
+    
+    If DrawingMode = ttscreenrefresh Then
+      RecreatePoly
+    End If
+
+  End If
+  PenX = xe
+  PenY = ye
+  RepositionTurtle
+  
+  ' restore original direction
+  If restoreAngle Then
+     nAngle = originalAngle
+  End If
+End Sub
+
+
 ' From https://rosettacode.org/wiki/Circles_of_given_radius_through_two_points#VBA
-Private Sub getCenterOfCircle(ByVal x1 As Single, ByVal y1 As Single, ByVal x2 As Single, _
-      ByVal y2 As Single, ByVal R As Single, ByVal positive As Boolean, xc As Single, yc As Single)
-  Dim xd As Single, yd As Single, s2 As Single, sep As Single
-  Dim xh As Single, yh As Single, md As Single, xs As Single, ys As Single
+Private Sub getCenterOfCircle(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, _
+      ByVal y2 As Double, ByVal R As Double, ByVal positive As Boolean, xc As Double, yc As Double)
+  Dim xd As Double, yd As Double, s2 As Double, sep As Double
+  Dim xh As Double, yh As Double, md As Double, xs As Double, ys As Double
 
         xd = x2 - x1
         yd = y1 - y2
@@ -947,3 +1042,23 @@ Private Sub getCenterOfCircle(ByVal x1 As Single, ByVal y1 As Single, ByVal x2 A
         End If
         
 End Sub
+
+Private Sub Class_Initialize()
+
+End Sub
+
+Public Property Get FillTransparency() As Long
+  FillTransparency = cFillTransparency * 100
+End Property
+
+Public Property Let FillTransparency(ByVal NewValue As Long)
+ cFillTransparency = NewValue / 100
+End Property
+
+Public Property Get PenTransparency() As Long
+  PenTransparency = cPenTransparency * 100
+End Property
+
+Public Property Let PenTransparency(ByVal NewValue As Long)
+ cPenTransparency = NewValue / 100
+End Property
