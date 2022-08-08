@@ -8,6 +8,7 @@ The code is available in the [samples.bas](https://github.com/fizban99/TurtleGra
 
 ## Badge
 ![Badge](./turtle-graphics-badge.svg?raw=true)
+Inspired by a now unavailable example of LibreLogo
 
 ## Flower with hexagons
 ![Flower with hexagons](./turtle-graphics-flower1.svg?raw=true)
@@ -45,7 +46,7 @@ Inspired by <https://www.mdpi.com/2076-3417/9/11/2383/htm> "Auto-Generation Syst
 
 ## Pookkalam
 
-Inspired by [Code a Pookkalam | Python programming] (https://www.youtube.com/watch?v=FYEuQUF37G0)
+Inspired by [Code a Pookkalam | Python programming](https://www.youtube.com/watch?v=FYEuQUF37G0)
 
 ![Batik flower](./turtle-graphics-pookkalam.svg?raw=true)
 
