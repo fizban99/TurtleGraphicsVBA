@@ -14,7 +14,7 @@ You can see some sample drawings in the [samples](https://github.com/fizban99/Tu
 
 ## Commands
 
-### `Arc(DiameterAcross As Double, DiameterFrontBack As Variant, StartAngle As Double, EndAngle As Double, ArcType As ttArcType) `
+### `Arc(ByVal DiameterAcross As Double, ByVal DiameterFrontBack As Variant, ByVal StartAngle As Double, ByVal EndAngle As Double, ByVal ArcType As ttArcType) `
 
 ### `Center()`
 
@@ -22,7 +22,7 @@ You can see some sample drawings in the [samples](https://github.com/fizban99/Tu
 
 ### `ClosePoints()`
 
-### `Ellipse(DiameterAcross As Double, Optional DiameterFrontBack)`
+### `Ellipse(ByVal DiameterAcross As Double, Optional DiameterFrontBack)`
 
 ### `GoToXY(ByVal X As Long, ByVal Y As Long)`
 
@@ -32,6 +32,10 @@ You can see some sample drawings in the [samples](https://github.com/fizban99/Tu
 
 ### `Move(ByVal steps As Double)`
 
+### `MoveBezier(ByVal Steps As Double, angle1 As Double, ByVal distance1 As Double, ByVal angle2 As Double, ByVal distance2 As Double)`
+
+### `Sub MoveCurved(ByVal Steps As Double, ByVal radius As Double, Optional curveType As ttCurveType = ttHalfEllipse)`
+
 ### `PenDown()`
 
 ### `PenUp()`
@@ -40,7 +44,7 @@ You can see some sample drawings in the [samples](https://github.com/fizban99/Tu
 
 ### `PointInDirection(ByVal angle As Integer)`
 
-### `SaveCanvas(fileName As String, ImageFormat As ttImageFormat)`
+### `SaveCanvas(ByVal fileName As String, ByVal ImageFormat As ttImageFormat)`
 
 ### `Show()`
 
@@ -48,9 +52,9 @@ You can see some sample drawings in the [samples](https://github.com/fizban99/Tu
 
 ### `TurnRight(ByVal angle As Double)`
 
-### `Wait(milliseconds As Long)`
+### `Wait(ByVal milliseconds As Long)`
 
-### `WriteText(txt As String)`
+### `WriteText(ByVal txt As String)`
 
 
 ## Properties
