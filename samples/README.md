@@ -55,6 +55,6 @@ Inspired by [Code a Pookkalam | Python programming](https://www.youtube.com/watc
 ![Flower 3](./turtle-graphics-flower3.svg?raw=true)
 
 ## Mandala 1
-This one has been created using turtle as well the transform functions.
+This one has been created using turtle as well the transform functions. Inspired by [Adobe illustrator mandala design](https://www.youtube.com/watch?v=aE8olcSat30)
 
 ![Mandala 1](./turtle-graphics-mandala1.svg?raw=true)
