@@ -5,6 +5,9 @@ Besides the normal straight line movement, this library has a moveCurved functio
 
 Between a penDown and a penUp instruction, the move instruction will create a polyline (all segments will belong to the same shape). Similarly, between a penDown and a penUp instruction, the moveCurved will produce a Bezier curve, but without having to worry about the control points. Both methods cannot be mixed, though. If you need a straight line within a moveCurved path, use ttLine as CurveType for moveCurved third parameter. 
 
+In addition to the traditional turtle drawing, there is also a transformer object that allows translating, rotating and resizing any shape, including the default Excel ones.
+
+
 Note that the TurtleGraphics.xlam file is locked for visualization so that VBA errors made by students do not jump to lines in that module. To actually edit or view the module, the password is "turtle".
 
 You can see some sample drawings in the [samples](https://github.com/fizban99/TurtleGraphicsVBA/tree/main/samples) folder.
@@ -14,80 +17,106 @@ You can see some sample drawings in the [samples](https://github.com/fizban99/Tu
 
 ## Commands
 
-### `Arc(ByVal DiameterAcross As Double, ByVal DiameterFrontBack As Variant, ByVal StartAngle As Double, ByVal EndAngle As Double, ByVal ArcType As ttArcType) `
+### Arc
 
-### `Center()`
+DiameterAcross
+DiameterFrontBack 
+StartAngle 
+EndAngle
+ArcType
 
-### `Clear()`
+### Center
 
-### `ClosePoints()`
+### Clear
 
-### `Ellipse(ByVal DiameterAcross As Double, Optional DiameterFrontBack)`
+### ClosePoints
 
-### `GoToXY(ByVal X As Long, ByVal Y As Long)`
+### Ellipse
+DiameterAcross
+DiameterFrontBack
 
-### `Group()`
+### GoToXY
+X
+Y
 
-### `Hide()`
+### Group
 
-### `Move(ByVal steps As Double)`
+### Hide
 
-### `MoveBezier(ByVal Steps As Double, angle1 As Double, ByVal distance1 As Double, ByVal angle2 As Double, ByVal distance2 As Double)`
+### Move
+steps
 
-### `Sub MoveCurved(ByVal Steps As Double, ByVal radius As Double, Optional curveType As ttCurveType = ttHalfEllipse)`
+### MoveBezier
+Steps
+angle1
+distance1
+angle2
+distance2
 
-### `PenDown()`
+### MoveCurved
+Steps
+radius
+curveType
 
-### `PenUp()`
+### PenDown
 
-### `Point()`
+### PenUp
 
-### `PointInDirection(ByVal angle As Integer)`
+### Point
 
-### `SaveCanvas(ByVal fileName As String, ByVal ImageFormat As ttImageFormat)`
+### PointInDirection
+angle
 
-### `Show()`
+### SaveCanvas
+fileName
+ImageFormat
 
-### `TurnLeft(ByVal angle As Double)`
+### Show
 
-### `TurnRight(ByVal angle As Double)`
+### TurnLeft
+angle
 
-### `Wait(ByVal milliseconds As Long)`
+### TurnRight
+angle
 
-### `WriteText(ByVal txt As String)`
+### Wait
+milliseconds
+
+### WriteText
+txt
 
 
 ## Properties
 
-### `CanvasColor`
+### CanvasColor
 
-### `CanvasHeight` (Read Only)
+### CanvasHeight (Read Only)
 
-### `CanvasWidth` (Read Only)
+### CanvasWidth (Read Only)
 
-### `DrawingMode`
+### DrawingMode
   Whether the shape is drawn upon pen up (to speed up the drawing) or while it is being drawn.
 
-### `FillColor`
+### FillColor
 
-### `FillType`
+### FillType
 
-### `FontColor`
+### FontColor
 
-### `FontName`
+### FontName
 
-### `FontSize`
+### FontSize
 
-### `FontStyle`
+### FontStyle
 
-### `FontWeight`
+### FontWeight
 
-### `LineStyle`
+### LineStyle
 
-### `PenColor`
+### PenColor
 
-### `PenSize`
+### PenSize
 
-### `X`
+### X
 
-### `Y`
+### Y
