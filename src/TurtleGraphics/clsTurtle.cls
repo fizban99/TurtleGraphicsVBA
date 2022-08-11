@@ -53,7 +53,7 @@ Const PI = 3.14159265358979
 Const INITIAL_ANGLE = 90
 Public Enum ttColors
   ttwhite = vbWhite
-  ttBlack = vbBlack
+  ttblack = vbBlack
   ttyellow = vbYellow
   ttblue = vbBlue
   ttmagenta = vbMagenta
@@ -68,7 +68,7 @@ Public Enum ttColors
   ttViolet = 8388736
   ttRose = 13408767
   ttPlum = 6697881
-  ttInvisible = -1
+  ttinvisible = -1
 End Enum
 
 Public Enum ttImageFormat
@@ -79,7 +79,7 @@ Public Enum ttImageFormat
 End Enum
 
 Public Enum ttCurveType
-  ttArcCircle
+  ttarccircle
   ttHalfEllipse
   ttQuarterEllipse
   ttPetalfd
@@ -149,7 +149,7 @@ Dim fillHue As Integer, fillLuminosity As Integer, fillSaturation As Integer
 
 Public cFillTransparency As Double
 Public cPenTransparency As Double
-Public PenSize As Double
+Public penSize As Double
 Dim cPenColor As ttColors
 Public DrawingMode As ttDrawingMode
 Public FillType As ttFillType
@@ -195,15 +195,15 @@ Public Function InitTurtle(ByVal CanvasName As String, ByVal TurtleName As Strin
   nAngle = INITIAL_ANGLE
   Set Canvas = ActiveSheet.ChartObjects(CanvasName).Chart
   Set CanvasShape = ActiveSheet.Shapes(CanvasName)
-  PenSize = 1
-  PenColor = 0
+  penSize = 1
+  penColor = 0
   IsPenDown = True
   FontSize = 11
   FontName = "Arial"
-  FontColor = ttBlack
+  FontColor = ttblack
   FontStyle = ttFSNormal
   FontWeight = ttFWNormal
-  FillColor = ttInvisible
+  fillColor = ttinvisible
   RefreshLines = 10
   DrawingMode = ttscreenrefresh
 End Function
@@ -223,7 +223,7 @@ End Sub
 
 
 
-Public Sub Move(ByVal Steps As Double)
+Public Sub Move(ByVal steps As Double)
 '
 ' Add a Line to the drawing
   
@@ -231,8 +231,8 @@ Public Sub Move(ByVal Steps As Double)
   Dim newX As Double, newY As Double, line As Shape, i As Long
   
 
-  newX = PenX + Math.Cos((nAngle - INITIAL_ANGLE) * PI / 180) * Steps
-  newY = PenY + Math.Sin((nAngle - INITIAL_ANGLE) * PI / 180) * Steps
+  newX = PenX + Math.Cos((nAngle - INITIAL_ANGLE) * PI / 180) * steps
+  newY = PenY + Math.Sin((nAngle - INITIAL_ANGLE) * PI / 180) * steps
   
   NumLines = NumLines + 1
   If IsPenDown Then
@@ -290,15 +290,15 @@ Public Sub Reset()
   Me.Show
   Me.PenDown
   Me.DrawingMode = ttscreenrefresh
-  Me.PenSize = 1
-  Me.FillColor = ttInvisible
-  Me.PenColor = ttBlack
+  Me.penSize = 1
+  Me.fillColor = ttinvisible
+  Me.penColor = ttblack
   Me.CanvasColor = ttwhite
 End Sub
 
 Public Sub Center()
-  PenX = Canvas.ChartArea.Width / 2
-  PenY = Canvas.ChartArea.Height / 2
+  PenX = Canvas.ChartArea.width / 2
+  PenY = Canvas.ChartArea.height / 2
   RepositionTurtle
 End Sub
 
@@ -325,7 +325,7 @@ Public Sub FillHueShift(ByVal shift As Long)
 End Sub
 
 
-Public Sub PenUp()
+Public Function PenUp() As ShapeRange
   Dim line As Shape
   If IsPenDown Then
     If PolyNodes > 0 Then
@@ -347,11 +347,13 @@ Public Sub PenUp()
       PolyNodes = 0
     End If
     IsPenDown = False
+    Set PenUp = Canvas.Shapes.Range(Array(tempPoly.Name))
     Set tempPoly = Nothing
     PolyNodes = 0
+    
   End If
   'DoEvents
-End Sub
+End Function
 
 
 
@@ -372,10 +374,10 @@ End Sub
 
 Private Sub FormatShape(shp As Shape, Optional bFill As Boolean = True)
   With shp
-    .line.ForeColor.rgb = PenColor
+    .line.ForeColor.RGB = penColor
     .line.Transparency = cPenTransparency
-    If FillColor <> ttInvisible And bFill And .nodes.Count > 2 Then
-      .Fill.ForeColor.rgb = FillColor
+    If fillColor <> ttinvisible And bFill And .nodes.Count > 2 Then
+      .Fill.ForeColor.RGB = fillColor
       .Fill.Visible = msoTrue
       .Fill.Solid
       .Fill.Transparency = cFillTransparency
@@ -385,8 +387,8 @@ Private Sub FormatShape(shp As Shape, Optional bFill As Boolean = True)
       End If
     End If
     
-    .line.Weight = PenSize
-    If PenColor = ttInvisible Then
+    .line.Weight = penSize
+    If penColor = ttinvisible Then
       .line.Visible = msoFalse
     End If
     If TurtleImage.Visible Then
@@ -398,7 +400,7 @@ Private Sub FormatShape(shp As Shape, Optional bFill As Boolean = True)
 End Sub
 
 
-Public Sub Group()
+Public Function Group() As Shape
 '
 ' Group all shapes
 '
@@ -421,10 +423,10 @@ Public Sub Group()
       End If
   Next
   If intIndex > 1 Then
-    Canvas.Shapes.Range(vntItems).Group
+    Group = Canvas.Shapes.Range(vntItems).Group()
   End If
 
-End Sub
+End Function
 
 Public Sub TurnRight(ByVal angle As Double)
   Dim dec As Double
@@ -462,18 +464,18 @@ Public Sub GoToXY(ByVal x As Long, ByVal y As Long)
 End Sub
 
 Public Property Get CanvasWidth() As Double
-    CanvasWidth = Canvas.ChartArea.Width
+    CanvasWidth = Canvas.ChartArea.width
 End Property
 
-Private Property Get Width() As Double
-    Width = TurtleImage.Width
+Private Property Get width() As Double
+    width = TurtleImage.width
 End Property
-Private Property Get Height() As Double
-    Height = TurtleImage.Height
+Private Property Get height() As Double
+    height = TurtleImage.height
 End Property
 
 Public Property Get CanvasHeight() As Double
-    CanvasHeight = Canvas.ChartArea.Height
+    CanvasHeight = Canvas.ChartArea.height
 End Property
 
 Public Property Get x() As Double
@@ -497,28 +499,28 @@ Public Sub Wait(milliseconds As Long)
 End Sub
 
 Public Property Let CanvasColor(value As ttColors)
-  CanvasShape.Fill.ForeColor.rgb = value
+  CanvasShape.Fill.ForeColor.RGB = value
 End Property
  
 Public Property Get CanvasColor() As ttColors
- CanvasColor = CanvasShape.Fill.ForeColor.rgb
+ CanvasColor = CanvasShape.Fill.ForeColor.RGB
 End Property
-Public Property Let PenColor(value As ttColors)
+Public Property Let penColor(value As ttColors)
   RGB2HSL value, penHue, penSaturation, penLuminosity
   cPenColor = value
 End Property
  
-Public Property Get PenColor() As ttColors
-  PenColor = cPenColor
+Public Property Get penColor() As ttColors
+  penColor = cPenColor
 End Property
  
-Public Property Let FillColor(value As ttColors)
+Public Property Let fillColor(value As ttColors)
   RGB2HSL value, fillHue, fillSaturation, fillLuminosity
   cFillColor = value
 End Property
  
-Public Property Get FillColor() As ttColors
-  FillColor = cFillColor
+Public Property Get fillColor() As ttColors
+  fillColor = cFillColor
 End Property
 Function Pause(ByVal NumberOfSeconds As Variant)
     On Error GoTo Error_GoTo
@@ -570,7 +572,7 @@ Public Sub ClosePoints()
   End If
 End Sub
 
-Public Sub Ellipse(DiameterAcross As Double, Optional DiameterFrontBack)
+Public Sub Ellipse(ByVal DiameterAcross As Double, Optional DiameterFrontBack)
   Dim shp As Shape
   If IsPenDown Then
     If IsMissing(DiameterFrontBack) Then DiameterFrontBack = DiameterAcross
@@ -580,7 +582,7 @@ Public Sub Ellipse(DiameterAcross As Double, Optional DiameterFrontBack)
   End If
 End Sub
 
-Public Sub Arc(ByVal DiameterAcross As Double, ByVal DiameterFrontBack As Double, ByVal StartAngle As Double, ByVal EndAngle As Double, ArcType As ttArcType)
+Public Sub Arc(ByVal DiameterAcross As Double, ByVal DiameterFrontBack As Double, ByVal StartAngle As Double, ByVal EndAngle As Double, ByVal ArcType As ttArcType)
   Dim shp As Shape
   If IsPenDown Then
     If ArcType = TTARC Then
@@ -602,9 +604,9 @@ Public Function ColorPicker(Optional copy = False)
   Dim document As HTMLDocument, color As Long
   Dim Red As Long, Green As Long, Blue As Long
   
-  Red = Me.FillColor Mod 256
-  Green = (Me.FillColor \ 256) Mod 256
-  Blue = Me.FillColor \ 65536
+  Red = Me.fillColor Mod 256
+  Green = (Me.fillColor \ 256) Mod 256
+  Blue = Me.fillColor \ 65536
   If Red = -1 Then
     Red = 255
     Green = 255
@@ -637,11 +639,11 @@ Public Sub WriteText(txt As String)
   Else
     shp.TextFrame2.TextRange.Font.Bold = msoFalse
   End If
-  shp.TextFrame2.TextRange.Font.Fill.ForeColor.rgb = FontColor
+  shp.TextFrame2.TextRange.Font.Fill.ForeColor.RGB = FontColor
   shp.TextFrame2.AutoSize = msoAutoSizeShapeToFitText
   shp.TextFrame2.WordWrap = msoFalse
-  shp.Left = Me.x - shp.Width / 2
-  shp.Top = Me.y - shp.Height / 2
+  shp.Left = Me.x - shp.width / 2
+  shp.Top = Me.y - shp.height / 2
   shp.Rotation = TurtleImage.Rotation
 
 
@@ -693,16 +695,17 @@ Dim ReturnValue As Long
 
 End Function
 
-Private Sub arcCircle(ByVal Steps As Double, ByVal radius As Double)
+Private Sub arcCircle(ByVal steps As Double, ByVal radius As Double)
       Dim xe As Double, ye As Double, positive As Boolean
       Dim xc As Double, yc As Double
       
-      xe = PenX + Math.Cos((nAngle - INITIAL_ANGLE) * [Pi()] / 180) * Steps          ' x-end
-      ye = PenY + Math.Sin((nAngle - INITIAL_ANGLE) * [Pi()] / 180) * Steps
-      If Abs(radius) <= Abs(Steps) / 2 Then
+      xe = PenX + Math.Cos((nAngle - INITIAL_ANGLE) * [pi()] / 180) * steps          ' x-end
+      ye = PenY + Math.Sin((nAngle - INITIAL_ANGLE) * [pi()] / 180) * steps
+     
+      If Abs(radius) < Abs(steps) / 2 Then
         Err.Raise vbObjectError + 513, "Turtle Graphics", _
            "Radius has to be greater than half the steps." + vbNewLine + _
-           "Radius: " + Str(radius) + " Steps: " + Str(Steps)
+           "Radius: " + Str(radius) + " Steps: " + Str(steps)
       ElseIf radius > 0 Then
         positive = True
       Else
@@ -749,7 +752,7 @@ Private Sub arcCircle(ByVal Steps As Double, ByVal radius As Double)
 End Sub
 
 
-Sub MoveCurved(ByVal Steps As Double, ByVal radius As Double, _
+Sub MoveCurved(ByVal steps As Double, ByVal radius As Double, _
     Optional curveType As ttCurveType = ttHalfEllipse)
   Dim EllipseAngle As Double, w As Double, StepsForward As Double
   Dim angle1 As Double, angle2 As Double, originalAngle As Double
@@ -761,13 +764,16 @@ Sub MoveCurved(ByVal Steps As Double, ByVal radius As Double, _
   End If
   originalAngle = nAngle
   'Treat steps < 0 as a rotation
-  If Steps < 0 Then
+  If steps < 0 Then
     nAngle = nAngle + 180
-    Steps = -Steps
+    steps = -steps
+  End If
+  If curveType = ttarccircle And Abs(radius) = Abs(steps / 2) Then
+    curveType = ttHalfEllipse
   End If
   
   If curveType = ttHalfEllipse Then
-    w = Steps / 2
+    w = steps / 2
     MoveTangent w, radius, 0, 0
     If radius > 0 Then
       nAngle = nAngle + 90
@@ -785,18 +791,18 @@ Sub MoveCurved(ByVal Steps As Double, ByVal radius As Double, _
 
   ElseIf curveType = ttPetalfd Or curveType = ttPetalbk Then
       If curveType = ttPetalfd Then
-        w = Steps * 0.6
+        w = steps * 0.6
         angle1 = 45
         angle2 = 0
       Else
-        w = Steps * 0.4
+        w = steps * 0.4
         angle1 = 0
         angle2 = -45
       End If
       
       MoveTangent w, radius, angle1, 0
     
-      w = Steps - w
+      w = steps - w
       
       If radius > 0 Then
         nAngle = nAngle + 90
@@ -812,19 +818,19 @@ Sub MoveCurved(ByVal Steps As Double, ByVal radius As Double, _
         nAngle = nAngle + 90
       End If
   ElseIf curveType = ttQuarterEllipse Then
-      StepsForward = Sqr(Steps ^ 2 - radius ^ 2)
-      EllipseAngle = Math.Atn(radius / StepsForward) / [Pi()] * 180
+      StepsForward = Sqr(steps ^ 2 - radius ^ 2)
+      EllipseAngle = Math.Atn(radius / StepsForward) / [pi()] * 180
       nAngle = nAngle + EllipseAngle
       MoveTangent StepsForward, radius, 0, 0
-  ElseIf curveType = ttArcCircle Then
-      arcCircle Steps, radius
+  ElseIf curveType = ttarccircle Then
+      arcCircle steps, radius
   ElseIf curveType = ttCusp Then
       nAngle = nAngle - 90
-      MoveTangent radius, -Steps / 2, 90, 0, 0.55, 0.55
-      MoveTangent -radius, Steps / 2, 90, 0, 0.55, 0.55
+      MoveTangent radius, -steps / 2, 90, 0, 0.55, 0.55
+      MoveTangent -radius, steps / 2, 90, 0, 0.55, 0.55
       nAngle = nAngle + 90
   ElseIf curveType = ttLine Then
-      MoveTangent Steps, 0, 90, 0, 0, 0
+      MoveTangent steps, 0, 90, 0, 0, 0
   End If
       
       
@@ -834,19 +840,19 @@ End Sub
 
 
 Public Function getSideLength(ByVal radius As Double, ByVal sides As Long)
-  getSideLength = radius * (2 * Sin([Pi()] / sides))
+  getSideLength = radius * (2 * Sin([pi()] / sides))
 End Function
 
 Public Sub getStepsForwardAndLeft(ByVal angle, ByVal radius, StepsForward As Double, StepsLeft As Double)
-  StepsForward = radius * Cos(angle / 180 * [Pi()])
-  StepsLeft = radius * Sin(angle / 180 * [Pi()])
+  StepsForward = radius * Cos(angle / 180 * [pi()])
+  StepsLeft = radius * Sin(angle / 180 * [pi()])
 End Sub
 
 
 Private Sub RepositionTurtle()
   If TurtleImage.Visible Then
-    TurtleImage.Left = PenX - TurtleImage.Width / 2
-    TurtleImage.Top = PenY - TurtleImage.Height / 2
+    TurtleImage.Left = PenX - TurtleImage.width / 2
+    TurtleImage.Top = PenY - TurtleImage.height / 2
   End If
 End Sub
 
@@ -869,7 +875,7 @@ Private Sub MoveTangent(ByVal StepsForward As Double, ByVal StepsLeft As Double,
   
   kappa = 0.5522848
   
-  ellipse_angle = Math.Atn(StepsLeft / StepsForward) / [Pi()] * 180
+  ellipse_angle = Math.Atn(StepsLeft / StepsForward) / [pi()] * 180
   chord = Sqr(StepsForward ^ 2 + StepsLeft ^ 2)
   'turn in direction of the ellipse co-vertex
   nAngle = nAngle - ellipse_angle
@@ -895,14 +901,14 @@ Private Sub MoveTangent(ByVal StepsForward As Double, ByVal StepsLeft As Double,
   Else
     oy = StepsForward * factor2
   End If
-  xe = x + Math.Cos((nAngle - INITIAL_ANGLE) * [Pi()] / 180) * chord          ' x-end
-  ye = y + Math.Sin((nAngle - INITIAL_ANGLE) * [Pi()] / 180) * chord
+  xe = x + Math.Cos((nAngle - INITIAL_ANGLE) * [pi()] / 180) * chord          ' x-end
+  ye = y + Math.Sin((nAngle - INITIAL_ANGLE) * [pi()] / 180) * chord
 
-  cx1 = x - Math.Sin([Pi()] / 180 * (90 - nAngle - ellipse_angle - FirstAngleOffset)) * oy
-  cy1 = y - Math.Cos([Pi()] / 180 * (90 - nAngle - ellipse_angle - FirstAngleOffset)) * oy
+  cx1 = x - Math.Sin([pi()] / 180 * (90 - nAngle - ellipse_angle - FirstAngleOffset)) * oy
+  cy1 = y - Math.Cos([pi()] / 180 * (90 - nAngle - ellipse_angle - FirstAngleOffset)) * oy
   
-  cx2 = xe - Math.Cos([Pi()] / 180 * (90 - nAngle - ellipse_angle - SecondAngleOffset)) * ox
-  cy2 = ye + Math.Sin([Pi()] / 180 * (90 - nAngle - ellipse_angle - SecondAngleOffset)) * ox
+  cx2 = xe - Math.Cos([pi()] / 180 * (90 - nAngle - ellipse_angle - SecondAngleOffset)) * ox
+  cy2 = ye + Math.Sin([pi()] / 180 * (90 - nAngle - ellipse_angle - SecondAngleOffset)) * ox
   
     NumLines = NumLines + 1
   If IsPenDown Then
@@ -935,7 +941,7 @@ Private Sub MoveTangent(ByVal StepsForward As Double, ByVal StepsLeft As Double,
 End Sub
 
 
-Public Sub MoveBezier(ByVal Steps As Double, angle1 As Double, _
+Public Sub MoveBezier(ByVal steps As Double, angle1 As Double, _
         ByVal distance1 As Double, ByVal angle2 As Double, _
         ByVal distance2 As Double)
   
@@ -945,10 +951,10 @@ Public Sub MoveBezier(ByVal Steps As Double, angle1 As Double, _
   Dim originalAngle As Double, restoreAngle As Boolean
   
   restoreAngle = False
-  If Steps < 0 Then
+  If steps < 0 Then
     originalAngle = nAngle
     nAngle = nAngle + 180
-    Steps = -Steps
+    steps = -steps
     restoreAngle = True
   End If
   
@@ -958,16 +964,16 @@ Public Sub MoveBezier(ByVal Steps As Double, angle1 As Double, _
   ' control points
   
   'control points offset horizontal
-  ox1 = distance1 * Cos((nAngle - INITIAL_ANGLE + angle1) * [Pi()] / 180)
-  ox2 = distance2 * Cos((nAngle - INITIAL_ANGLE + angle2) * [Pi()] / 180)
+  ox1 = distance1 * Cos((nAngle - INITIAL_ANGLE + angle1) * [pi()] / 180)
+  ox2 = distance2 * Cos((nAngle - INITIAL_ANGLE + angle2) * [pi()] / 180)
   
   'control points offset vertical
-  oy1 = distance1 * Sin((nAngle - INITIAL_ANGLE + angle1) * [Pi()] / 180)
-  oy2 = distance2 * Sin((nAngle - INITIAL_ANGLE + angle2) * [Pi()] / 180)
+  oy1 = distance1 * Sin((nAngle - INITIAL_ANGLE + angle1) * [pi()] / 180)
+  oy2 = distance2 * Sin((nAngle - INITIAL_ANGLE + angle2) * [pi()] / 180)
   
   
-  xe = x + Math.Cos((nAngle - INITIAL_ANGLE) * [Pi()] / 180) * Steps          ' x-end
-  ye = y + Math.Sin((nAngle - INITIAL_ANGLE) * [Pi()] / 180) * Steps
+  xe = x + Math.Cos((nAngle - INITIAL_ANGLE) * [pi()] / 180) * steps          ' x-end
+  ye = y + Math.Sin((nAngle - INITIAL_ANGLE) * [pi()] / 180) * steps
 
   cx1 = x + ox1
   cy1 = y + oy1
@@ -1007,7 +1013,7 @@ End Sub
 
 ' From https://rosettacode.org/wiki/Circles_of_given_radius_through_two_points#VBA
 Private Sub getCenterOfCircle(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, _
-      ByVal y2 As Double, ByVal R As Double, ByVal positive As Boolean, xc As Double, yc As Double)
+      ByVal y2 As Double, ByVal r As Double, ByVal positive As Boolean, xc As Double, yc As Double)
   Dim xd As Double, yd As Double, s2 As Double, sep As Double
   Dim xh As Double, yh As Double, md As Double, xs As Double, ys As Double
 
@@ -1019,15 +1025,15 @@ Private Sub getCenterOfCircle(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 A
         yh = (y1 + y2) / 2
         Dim txt As String
         If sep = 0 Then
-            Debug.Print "same points/" & IIf(R = 0, "radius is zero", "infinite solutions")
+            Debug.Print "same points/" & IIf(r = 0, "radius is zero", "infinite solutions")
         Else
-            If sep = 2 * R Then
+            If sep = 2 * r Then
                 Debug.Print "opposite ends of diameter with centre " & xh & ", " & yh & "."
             Else
-                If sep > 2 * R Then
-                    Debug.Print "too far apart " & sep & " > " & 2 * R
+                If sep > 2 * r Then
+                    Debug.Print "too far apart " & sep & " > " & 2 * r
                 Else
-                    md = Sqr(R * R - s2 / 4)
+                    md = Sqr(r * r - s2 / 4)
                     xs = md * xd / sep
                     ys = md * yd / sep
                     If positive Then

@@ -22,10 +22,10 @@ Sub butterfly()
   
   wingColors = Array(ttred, ttblue, ttmagenta, ttyellow, ttgreen, ttgold)
   With turtle:
-    .PenColor = ttInvisible
+    .penColor = ttinvisible
     For size = 100 To 50 Step -10
       
-      .FillColor = wingColors(size / 10 - 5)
+      .fillColor = wingColors(size / 10 - 5)
       .PenDown
       For i = 1 To 4
         If i > 2 Then
@@ -41,8 +41,8 @@ Sub butterfly()
     Next size
     .PointInDirection 0
     .TurnRight 17
-    .FillColor = ttInvisible
-    .PenColor = ttBlack
+    .fillColor = ttinvisible
+    .penColor = ttblack
     .PenDown
     .MoveCurved 100, 95, ttQuarterEllipse
     .PenUp
@@ -65,8 +65,8 @@ Sub butterfly2()
   
   
   With turtle:
-    .FillColor = ttcyan
-    .PenColor = ttInvisible
+    .fillColor = ttcyan
+    .penColor = ttinvisible
     For size = 100 To 5 Step -5
       
       .FillHueShift 17
@@ -85,8 +85,8 @@ Sub butterfly2()
     Next size
     .PointInDirection 0
     .TurnRight 17
-    .FillColor = ttInvisible
-    .PenColor = ttBlack
+    .fillColor = ttinvisible
+    .penColor = ttblack
     .PenDown
     .MoveCurved 100, 95, ttQuarterEllipse
     .PenUp
@@ -111,8 +111,8 @@ Sub Badge()
     .PenUp
     .PointInDirection 0
     .FillType = ttSolid
-    .FillColor = ttgold
-    .PenColor = ttInvisible
+    .fillColor = ttgold
+    .penColor = ttinvisible
     .Center
     For i = 1 To points
       .Move length
@@ -128,9 +128,9 @@ Sub Badge()
       .TurnRight 360 / points / 2
     Next i
     .ClosePoints
-    .PenColor = ttwhite
+    .penColor = ttwhite
     .PenSize = length / points / 2
-    .FillColor = ttInvisible
+    .fillColor = ttinvisible
     .PointInDirection 90
     .PenDown
     .Ellipse 2 * length * 0.6 - length / points / 3
@@ -140,8 +140,8 @@ Sub Badge()
     .FontName = "Playbill"
     .WriteText "SHERIFF"
     .Group
-    .FillColor = ttInvisible
-    .PenColor = ttBlack
+    .fillColor = ttinvisible
+    .penColor = ttblack
     .PenSize = 1
   End With
 
@@ -160,7 +160,7 @@ Sub flower2()
   With turtle
     .Center
     .Clear
-    .FillColor = color
+    .fillColor = color
     .PenDown
     For j = 1 To petals
       .TurnRight 360 / petals
@@ -170,7 +170,7 @@ Sub flower2()
       Next i
     Next j
     .PenUp
-    .FillColor = ttInvisible
+    .fillColor = ttinvisible
     .PenDown
   End With
 End Sub
@@ -185,7 +185,7 @@ Sub flower1()
   With turtle
     .Center
     .Clear
-    .FillColor = color
+    .fillColor = color
     .PenDown
     For j = 1 To petals
       .TurnRight 360 / petals
@@ -195,7 +195,7 @@ Sub flower1()
       Next i
     Next j
     .PenUp
-    .FillColor = ttInvisible
+    .fillColor = ttinvisible
     .PenDown
   End With
 End Sub
@@ -238,12 +238,12 @@ Sub draw_triangle()
     .Reset
     .DrawingMode = ttNoScreenRefresh
     .FillType = ttSolid
-    .FillColor = ttyellow
+    .fillColor = ttyellow
     .y = .y + 100
     .x = .x - 100
     sierpinski 200, depth
     .PenUp
-    .FillColor = ttInvisible
+    .fillColor = ttinvisible
   End With
 End Sub
 
@@ -277,8 +277,8 @@ Sub flower3()
     .Reset
     .PenUp
     .DrawingMode = ttNoScreenRefresh
-    .FillColor = ttyellow
-    .PenColor = ttorange
+    .fillColor = ttyellow
+    .penColor = ttorange
     .PenSize = 3
     .FillTransparency = 0
     .PenTransparency = 0
@@ -319,12 +319,12 @@ Sub batik_flower()
     .Reset
     .DrawingMode = ttNoScreenRefresh
     .PenUp
-    .PenColor = ttInvisible
+    .penColor = ttinvisible
     'Pistils
     .TurnLeft 90
     .Move R
     .TurnRight 45
-    .FillColor = RGB(0, 128, 0)
+    .fillColor = RGB(0, 128, 0)
     .PenDown
     length = .getSideLength(R, 4)
     For i = 1 To 4
@@ -344,7 +344,7 @@ Sub batik_flower()
     .TurnLeft 360 / (2 * sides)
     .Move R
     .TurnRight 90 + 360 / (2 * sides)
-    .FillColor = RGB(191, 191, 0)
+    .fillColor = RGB(191, 191, 0)
     .PenDown
     For i = 1 To sides
      .MoveCurved length, length / 1.5, ttHalfEllipse
@@ -357,11 +357,11 @@ Sub batik_flower()
     .Move -R
 
 
-    .FillColor = ttBlack
+    .fillColor = ttblack
     .TurnLeft 360 / 32
     star 16, R * 1.1, R * 1.1 * 0.6
     .TurnRight 360 / 32
-    .FillColor = vbWhite
+    .fillColor = vbWhite
    
     For i = 1 To interior_sides
         .PenDown
@@ -371,8 +371,8 @@ Sub batik_flower()
         .PenUp
     Next i
     .PenDown
-    .FillColor = ttwhite
-    .PenColor = ttBlack
+    .fillColor = ttwhite
+    .penColor = ttblack
     .PenSize = 3
     .Ellipse interior_length / 2.5
     .PenUp
@@ -408,7 +408,7 @@ Sub draw_snowflake()
     .Reset
     .DrawingMode = ttNoScreenRefresh
     .FillType = ttSolid
-    .FillColor = ttyellow
+    .fillColor = ttyellow
     .PenUp
     .x = .x - 100
     .y = .y - 70
@@ -418,7 +418,7 @@ Sub draw_snowflake()
       .TurnRight 120
     Next i
     .PenUp
-    .FillColor = ttInvisible
+    .fillColor = ttinvisible
   End With
   Debug.Print Timer() - t
 End Sub
@@ -438,11 +438,11 @@ Dim i
     With turtle
       .Reset
       .Hide
-      .CanvasColor = ttBlack
+      .CanvasColor = ttblack
       .DrawingMode = ttNoScreenRefresh
       .Hide
       .PenSize = 1
-      .PenColor = ttcyan
+      .penColor = ttcyan
       For i = 1 To 400
         .PenDown
         .Move length
@@ -471,7 +471,7 @@ Sub PolySpiral()
       .Reset
       .PenDown
       .PenSize = 0.5
-      .FillColor = ttSkyBlue
+      .fillColor = ttSkyBlue
       Do While length > d
         .Move length
         .TurnLeft angle
@@ -528,9 +528,9 @@ Sub concentric()
       initialSegment = Rnd() * 240 / segments - 120 / segments
       angle = initialSegment
       If circ <> levels Then
-        .FillColor = RGB(Rnd() * 255, Rnd() * 255, Rnd() * 255)
+        .fillColor = RGB(Rnd() * 255, Rnd() * 255, Rnd() * 255)
       Else
-        .FillColor = ttwhite
+        .fillColor = ttwhite
         segments = 1
       End If
       For segment = 1 To segments
@@ -565,40 +565,40 @@ Sub pookkalam1()
     .DrawingMode = ttNoScreenRefresh
     'external star
     .PenUp
-    .FillColor = RGB(135, 16, 0)
-    .PenColor = ttInvisible
+    .fillColor = RGB(135, 16, 0)
+    .penColor = ttinvisible
     star 24, 200, 190
     
     'orange circle filled with red
     .PenDown
-    .PenColor = RGB(250, 138, 49)
+    .penColor = RGB(250, 138, 49)
     .PenSize = 3
-    .FillColor = RGB(236, 28, 0)
+    .fillColor = RGB(236, 28, 0)
     .Ellipse 360, 360
     
     'dark orange star
-    .FillColor = RGB(241, 93, 0)
-    .PenColor = ttInvisible
+    .fillColor = RGB(241, 93, 0)
+    .penColor = ttinvisible
     .PenUp
     star 24, 160, 152
     
     'orange circle
-    .FillColor = RGB(245, 169, 0)
+    .fillColor = RGB(245, 169, 0)
     .PenDown
     .Ellipse 280, 280
     
     'yellow star
-    .FillColor = RGB(248, 241, 0)
+    .fillColor = RGB(248, 241, 0)
     .PenUp
     star 24, 120, 115
     
     ' 12 hexagons
     
-    .PenColor = RGB(136, 66, 0)
+    .penColor = RGB(136, 66, 0)
     .PointInDirection 90
     .PenDown
     length = .getSideLength(180, 6) / 2
-    .FillColor = ttInvisible
+    .fillColor = ttinvisible
     For j = 1 To 12
       For i = 1 To 6
         .Move length
@@ -611,8 +611,8 @@ Sub pookkalam1()
   
     'white circle
     .Center
-    .FillColor = ttwhite
-    .PenColor = ttInvisible
+    .fillColor = ttwhite
+    .penColor = ttinvisible
     .PenDown
     white_circle_length = (length - 15) * 2
     .Ellipse white_circle_length, white_circle_length
@@ -620,16 +620,16 @@ Sub pookkalam1()
     'green star
     .PenUp
     length = (white_circle_length - 15) / 8
-    .FillColor = RGB(8, 106, 0)
+    .fillColor = RGB(8, 106, 0)
     star 24, length * 3, length * 3 - 3
     
     'orange internal circle
-    .FillColor = RGB(245, 169, 0)
+    .fillColor = RGB(245, 169, 0)
     .PenDown
     .Ellipse length * 4.5, length * 4.5
   
     'yellow internal circle
-    .FillColor = RGB(248, 241, 0)
+    .fillColor = RGB(248, 241, 0)
     .PenDown
     .Ellipse length * 3, length * 3
     
@@ -639,13 +639,13 @@ Sub pookkalam1()
     Dim stepsForward As Double
 
     stepsForward = white_circle_length / 2 - 2.5
-    .FillColor = ttInvisible
-    .PenColor = RGB(136, 66, 0)
+    .fillColor = ttinvisible
+    .penColor = RGB(136, 66, 0)
     For i = 1 To 15
       .MoveBezier stepsForward, -45, 0.5 * stepsForward, 135, 0.7 * stepsForward
-      .FillColor = .PenColor
+      .fillColor = .penColor
       .Ellipse 5
-      .FillColor = ttInvisible
+      .fillColor = ttinvisible
       .MoveBezier -stepsForward, -45, 0.5 * stepsForward, 135, 0.7 * stepsForward
       .TurnRight 360 / 15
     Next i
@@ -654,3 +654,48 @@ Sub pookkalam1()
 End Sub
 
 
+Sub mandala1()
+  Dim i As Long, layer As Long, ShapePattern As clsShapeTransformer
+  
+  With turtle
+    .Reset
+    .fillColor = ttwhite
+    .MoveCurved 200, 150, ttarccircle
+    .MoveCurved -200, 150, ttarccircle
+    'grab the shape to transform it
+    Set ShapePattern = shapetransformer(.PenUp())
+    For layer = 3 To 1 Step -1
+      With ShapePattern
+        If layer = 3 Or layer = 1 Then
+          .Rotate 360 / 10 / 2
+        End If
+        If layer = 1 Then
+          'clear central part
+          turtle.PenDown
+          turtle.penColor = ttinvisible
+          turtle.Ellipse 100, 100
+        End If
+        For i = 1 To 5 - layer
+          .Rotate 360 / 10, copyandrepeat:=10
+          .Resize 0.85
+        Next i
+        .Resize 1.255
+        If layer = 3 Then
+          .Rotate -360 / 10 / 2
+        End If
+        .Translate -15
+      End With
+    Next layer
+    With autoshapetransformer(msoShapeOval, 30, 20, ttblack)
+      .Translate 145
+      .Rotate -18
+      .Rotate -36, copyandrepeat:=9
+    End With
+    
+    .penColor = ttblack
+    .Ellipse 32, 32
+    .fillColor = ttblack
+    .Ellipse 15, 15
+    .Hide
+  End With
+End Sub
