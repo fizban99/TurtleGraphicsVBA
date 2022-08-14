@@ -10,7 +10,7 @@ In addition to the traditional turtle drawing, there is also a transformer objec
 
 Note that the TurtleGraphics.xlam file is locked for visualization so that VBA errors made by students do not jump to lines in that module. To actually edit or view the module, the password is "turtle".
 
-You can see some sample drawings in the [samples](https://github.com/fizban99/TurtleGraphicsVBA/tree/main/samples) folder.
+You can see some sample drawings in the [samples-png](https://github.com/fizban99/TurtleGraphicsVBA/tree/main/samples-png) and [samples-svg](https://github.com/fizban99/TurtleGraphicsVBA/tree/main/samples-svg) folder.
 
 ![Main screen](./img/main-screen.png?raw=true)
 
