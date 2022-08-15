@@ -62,3 +62,6 @@ Public Function ShapeTransformer(sr As ShapeRange) As clsShapeTransformer
   Set ShapeTransformer = myShapeTransformer
   myShapeTransformer.InitTransformer ShapeToTransform
 End Function
+
+
+

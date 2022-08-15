@@ -67,7 +67,7 @@ Public Enum ttColors
   ttSkyBlue = 16763904
   ttViolet = 8388736
   ttRose = 13408767
-  ttPlum = 6697881
+  ttplum = 6697881
   ttinvisible = -1
 End Enum
 
@@ -76,6 +76,7 @@ Public Enum ttImageFormat
   ttJPG
   ttEMF
   ttPNG
+  ttPDF
 End Enum
 
 Public Enum ttCurveType
@@ -182,7 +183,7 @@ Public Function ImageLost() As Boolean
   End If
   On Error GoTo SetImageLost:
 
-  l = TurtleImage.Left
+  l = TurtleImage.left
   Exit Function
 SetImageLost:
     ImageLost = True
@@ -206,6 +207,7 @@ Public Function InitTurtle(ByVal CanvasName As String, ByVal TurtleName As Strin
   fillColor = ttinvisible
   RefreshLines = 10
   DrawingMode = ttscreenrefresh
+  Me.Center
 End Function
 
 Private Sub createSAoPIfNotExists(ByVal x As Double, ByVal y As Double, Optional nodes = 1)
@@ -221,6 +223,38 @@ Private Sub createSAoPIfNotExists(ByVal x As Double, ByVal y As Double, Optional
     End If
 End Sub
 
+Private Sub getStepsAngle(ByVal x As Double, ByVal y As Double, ByRef steps As Double, ByRef angle As Double)
+
+  steps = Sqr((x - PenX) ^ 2 + (y - PenY) ^ 2)
+  If y - PenY <> 0 Then
+    angle = Atn((x - PenX) / -(y - PenY)) * 180 / [pi()]
+  Else
+    If x < PenX Then
+      angle = -90
+    Else
+      angle = 90
+    End If
+  End If
+  If y > PenY Then
+    angle = angle + 180
+  End If
+  If angle = 0 And y > PenY Then
+    angle = 180
+  End If
+End Sub
+
+
+
+Public Sub MoveXY(ByVal x As Double, y As Double)
+  Dim original_angle As Double, steps As Double
+  
+  original_angle = nAngle
+  getStepsAngle x, y, steps, nAngle
+  Move steps
+  PenX = x
+  PenY = y
+  nAngle = original_angle
+End Sub
 
 
 Public Sub Move(ByVal steps As Double)
@@ -294,9 +328,18 @@ Public Sub Reset()
   Me.fillColor = ttinvisible
   Me.penColor = ttblack
   Me.CanvasColor = ttwhite
+  Me.PenTransparency = 0
+  Me.FillTransparency = 0
+  Set tempPoly = Nothing
+  Set PolyPoints = Nothing
+  PolyNodes = 0
 End Sub
 
 Public Sub Center()
+  If IsPenDown Then
+    Me.PenUp
+    Me.PenDown
+  End If
   PenX = Canvas.ChartArea.width / 2
   PenY = Canvas.ChartArea.height / 2
   RepositionTurtle
@@ -345,9 +388,9 @@ Public Function PenUp() As ShapeRange
       RecreatePoly
       FormatShape tempPoly
       PolyNodes = 0
+      Set PenUp = Canvas.Shapes.Range(Array(tempPoly.Name))
     End If
     IsPenDown = False
-    Set PenUp = Canvas.Shapes.Range(Array(tempPoly.Name))
     Set tempPoly = Nothing
     PolyNodes = 0
     
@@ -372,7 +415,7 @@ Public Sub Clear()
   PolyNodes = 0
 End Sub
 
-Private Sub FormatShape(shp As Shape, Optional bFill As Boolean = True)
+Private Sub FormatShape(shp As Shape, Optional bFill = True)
   With shp
     .line.ForeColor.RGB = penColor
     .line.Transparency = cPenTransparency
@@ -400,50 +443,68 @@ Private Sub FormatShape(shp As Shape, Optional bFill As Boolean = True)
 End Sub
 
 
-Public Function Group() As Shape
+Public Function Group(Optional numShapes As Long, Optional ungroupFirst As Boolean = True) As ShapeRange
 '
 ' Group all shapes
 '
   Dim shpFrame As Shape
-  Dim intIndex As Integer
+  Dim intIndex As Integer, i As Long
     
-  For Each shpFrame In Canvas.Shapes
-    If shpFrame.Type = 6 Then
-      shpFrame.Ungroup
-    End If
-  Next
-        
+  If ungroupFirst Then
+    For Each shpFrame In Canvas.Shapes
+      If shpFrame.Type = 6 Then
+        shpFrame.ungroup
+      End If
+    Next
+  End If
 
   intIndex = 0
-  ReDim vntItems(Canvas.Shapes.Count - 1) As Variant
+  ReDim vntitems(Canvas.Shapes.Count - 1) As Variant
   For Each shpFrame In Canvas.Shapes
       If shpFrame.Type <> msoPicture Then
-        vntItems(intIndex) = shpFrame.Name
+        vntitems(intIndex) = shpFrame.Name
+        
         intIndex = intIndex + 1
       End If
   Next
   If intIndex > 1 Then
-    Group = Canvas.Shapes.Range(vntItems).Group()
-  End If
+    If intIndex < Canvas.Shapes.Count Then
+      ReDim Preserve vntitems(intIndex - 1)
+    End If
+    If numShapes <> 0 And numShapes < intIndex Then
+      For i = intIndex - numShapes To intIndex - 1
+        vntitems(i - intIndex + numShapes) = vntitems(i)
+      Next i
+      ReDim Preserve vntitems(numShapes - 1)
+    End If
+    If UBound(vntitems) > 0 Then
+      Set shpFrame = Canvas.Shapes.Range(vntitems).Group()
+      Set Group = Canvas.Shapes.Range(Array(shpFrame.Name))
+    Else
+      Set Group = Canvas.Shapes.Range(vntitems(0))
+    End If
+  ElseIf intIndex = 1 Then
+    Set Group = Canvas.Shapes.Range(vntitems(0))
 
+  End If
 End Function
 
 Public Sub TurnRight(ByVal angle As Double)
   Dim dec As Double
+  nAngle = nAngle + angle
   TurtleImage.IncrementRotation angle
-  nAngle = TurtleImage.Rotation + INITIAL_ANGLE
 
 End Sub
 
 Public Sub TurnLeft(ByVal angle As Double)
   TurtleImage.IncrementRotation -angle
-  nAngle = TurtleImage.Rotation + INITIAL_ANGLE
+  nAngle = nAngle - angle
 
 End Sub
 
 Public Sub PointInDirection(ByVal angle As Integer)
-  TurtleImage.Rotation = angle - INITIAL_ANGLE
-  nAngle = TurtleImage.Rotation + INITIAL_ANGLE
+  TurtleImage.rotation = angle - INITIAL_ANGLE
+  nAngle = angle
 End Sub
 
 
@@ -457,7 +518,11 @@ Public Sub Hide()
   TurtleImage.Visible = msoFalse
 End Sub
 
-Public Sub GoToXY(ByVal x As Long, ByVal y As Long)
+Public Sub GoToXY(ByVal x As Double, ByVal y As Double)
+  If IsPenDown Then
+    Me.PenUp
+    Me.PenDown
+  End If
   PenX = x
   PenY = y
   RepositionTurtle
@@ -499,7 +564,11 @@ Public Sub Wait(milliseconds As Long)
 End Sub
 
 Public Property Let CanvasColor(value As ttColors)
-  CanvasShape.Fill.ForeColor.RGB = value
+  If value = ttinvisible Then
+    CanvasShape.Fill.Visible = msoFalse
+  Else
+    CanvasShape.Fill.ForeColor.RGB = value
+  End If
 End Property
  
 Public Property Get CanvasColor() As ttColors
@@ -562,13 +631,19 @@ Public Sub Point()
     
 End Sub
 
-Public Sub ClosePoints()
-  Dim line As Shape
+Public Sub ClosePoints(Optional sendtoBack As Long = 0)
+  Dim line As Shape, i As Long
   If Not (PolyPoints Is Nothing) Then
-    PolyPoints.AddNodes msoSegmentLine, msoEditingAuto, InitialPenX, InitialPenY 'close the poly
+    PolyPoints.AddNodes msoSegmentLine, msoEditingCorner, InitialPenX, InitialPenY 'close the poly
     Set line = PolyPoints.ConvertToShape
     Set PolyPoints = Nothing
     FormatShape line
+    If sendtoBack Then
+      For i = 1 To sendtoBack
+        line.ZOrder msoSendBackward
+      Next i
+    End If
+    
   End If
 End Sub
 
@@ -577,7 +652,7 @@ Public Sub Ellipse(ByVal DiameterAcross As Double, Optional DiameterFrontBack)
   If IsPenDown Then
     If IsMissing(DiameterFrontBack) Then DiameterFrontBack = DiameterAcross
     Set shp = Canvas.Shapes.AddShape(msoShapeOval, Me.x - DiameterFrontBack / 2, Me.y - DiameterAcross / 2, DiameterFrontBack, DiameterAcross)
-    shp.Rotation = TurtleImage.Rotation
+    shp.rotation = TurtleImage.rotation
     FormatShape shp
   End If
 End Sub
@@ -594,7 +669,7 @@ Public Sub Arc(ByVal DiameterAcross As Double, ByVal DiameterFrontBack As Double
     End If
     shp.Adjustments.Item(1) = StartAngle - INITIAL_ANGLE
     shp.Adjustments.Item(2) = EndAngle - INITIAL_ANGLE
-    shp.Rotation = TurtleImage.Rotation
+    shp.rotation = TurtleImage.rotation
     FormatShape shp
   End If
 End Sub
@@ -642,9 +717,9 @@ Public Sub WriteText(txt As String)
   shp.TextFrame2.TextRange.Font.Fill.ForeColor.RGB = FontColor
   shp.TextFrame2.AutoSize = msoAutoSizeShapeToFitText
   shp.TextFrame2.WordWrap = msoFalse
-  shp.Left = Me.x - shp.width / 2
-  shp.Top = Me.y - shp.height / 2
-  shp.Rotation = TurtleImage.Rotation
+  shp.left = Me.x - shp.width / 2
+  shp.top = Me.y - shp.height / 2
+  shp.rotation = TurtleImage.rotation
 
 
 End Sub
@@ -653,23 +728,77 @@ End Sub
 Sub SaveCanvas(fileName As String, ImageFormat As ttImageFormat)
   Dim tmpVisible As Boolean, shpFrame As Shape
   
-  tmpVisible = TurtleImage.Visible
-  TurtleImage.Visible = False
-  If ImageFormat = ttPNG Then
-    Canvas.Export fileName, "PNG"
-  ElseIf ImageFormat = ttGIF Then
-    Canvas.Export fileName, "GIF"
-  ElseIf ImageFormat = ttJPG Then
-    Canvas.Export fileName, "JPG"
-  ElseIf ImageFormat = ttEMF Then
-    Canvas.ChartArea.Select
-'    Canvas.Shapes.SelectAll
-    Excel.Selection.copy
-    fnSaveAsEMF fileName
-  End If
-
   
-  TurtleImage.Visible = tmpVisible
+  If Canvas.Parent.Name = "Canvas2" Then
+    
+    tmpVisible = TurtleImage.Visible
+    TurtleImage.Visible = False
+    If ImageFormat = ttPNG Then
+      Canvas.Export fileName, "PNG"
+    ElseIf ImageFormat = ttGIF Then
+      Canvas.Export fileName, "GIF"
+    ElseIf ImageFormat = ttJPG Then
+      Canvas.Export fileName, "JPG"
+    ElseIf ImageFormat = ttPDF Then
+      Canvas.ExportAsFixedFormat xlTypePDF, fileName
+    ElseIf ImageFormat = ttEMF Then
+      Canvas.ChartArea.Select
+      Excel.Selection.copy
+      fnSaveAsEMF fileName
+    End If
+  
+    
+    TurtleImage.Visible = tmpVisible
+  Else
+    Dim canvas_copy As ChartObject
+    Dim sht As Worksheet
+    Dim tt As New clsTurtle, o As Object
+    Dim s As ShapeRange, xywh As Variant, l As Double, t As Double
+    
+    Set sht = Worksheets("Canvas")
+    'duplicate canvas
+    sht.Shapes("Canvas").Duplicate
+    Set canvas_copy = sht.ChartObjects(sht.ChartObjects.Count)
+    canvas_copy.left = 0
+    canvas_copy.Name = "Canvas2"
+    tt.InitTurtle "Canvas2", "Turtle"
+    Set s = tt.Group
+    xywh = get_xywh(s)
+    l = s.left - xywh(0)
+    t = s.top - xywh(1)
+    s.Select
+    Excel.Selection.Cut
+    tt.CanvasColor = ttinvisible
+    canvas_copy.Chart.ChartArea.width = xywh(2)
+    'canvas_copy.height = h
+    canvas_copy.Chart.ChartArea.height = xywh(3)
+    
+    canvas_copy.Chart.Paste
+    canvas_copy.Chart.Shapes(canvas_copy.Chart.Shapes.Count).left = l
+    canvas_copy.Chart.Shapes(canvas_copy.Chart.Shapes.Count).top = t
+    If ImageFormat = ttPDF Then
+      Canvas.Parent.Visible = xlSheetHidden
+      For Each o In sht.OLEObjects
+        o.Visible = xlSheetHidden
+      Next o
+      'resize to keep proportions in pdf
+      canvas_copy.Chart.ChartArea.height = (xywh(3)) * 1.0913907 '  1.106254
+    End If
+
+    tt.SaveCanvas fileName, ImageFormat
+    canvas_copy.Select
+    Excel.Selection.Delete
+    Dim document As New HTMLDocument
+    document.parentWindow.clipboardData.clearData
+    If ImageFormat = ttPDF Then
+      Canvas.Parent.Visible = xlSheetVisible
+      For Each o In sht.OLEObjects
+        o.Visible = xlSheetVisible
+      Next o
+    End If
+  
+  
+  End If
 End Sub
 
 
@@ -751,7 +880,18 @@ Private Sub arcCircle(ByVal steps As Double, ByVal radius As Double)
       RepositionTurtle
 End Sub
 
-
+Sub MoveXYCurved(ByVal x As Double, ByVal y As Double, ByVal radius As Double, _
+    Optional curveType As ttCurveType = ttHalfEllipse)
+  Dim original_angle As Double, steps As Double
+  
+  original_angle = nAngle
+  getStepsAngle x, y, steps, nAngle
+  MoveCurved steps, radius, curveType
+  PenX = x
+  PenY = y
+  nAngle = original_angle
+    
+End Sub
 Sub MoveCurved(ByVal steps As Double, ByVal radius As Double, _
     Optional curveType As ttCurveType = ttHalfEllipse)
   Dim EllipseAngle As Double, w As Double, StepsForward As Double
@@ -839,11 +979,16 @@ Sub MoveCurved(ByVal steps As Double, ByVal radius As Double, _
 End Sub
 
 
-Public Function getSideLength(ByVal radius As Double, ByVal sides As Long)
+Public Function getSideLength(ByVal radius As Double, ByVal sides As Double)
   getSideLength = radius * (2 * Sin([pi()] / sides))
 End Function
 
-Public Sub getStepsForwardAndLeft(ByVal angle, ByVal radius, StepsForward As Double, StepsLeft As Double)
+Public Function getRadiusLength(ByVal sideLength As Double, ByVal sides As Long)
+  getRadiusLength = sideLength / (2 * Sin([pi()] / sides))
+End Function
+
+
+Private Sub getStepsForwardAndLeft(ByVal angle, ByVal radius, StepsForward As Double, StepsLeft As Double)
   StepsForward = radius * Cos(angle / 180 * [pi()])
   StepsLeft = radius * Sin(angle / 180 * [pi()])
 End Sub
@@ -851,13 +996,14 @@ End Sub
 
 Private Sub RepositionTurtle()
   If TurtleImage.Visible Then
-    TurtleImage.Left = PenX - TurtleImage.width / 2
-    TurtleImage.Top = PenY - TurtleImage.height / 2
+    TurtleImage.left = PenX - TurtleImage.width / 2
+    TurtleImage.top = PenY - TurtleImage.height / 2
+    TurtleImage.ZOrder msoBringToFront
   End If
 End Sub
 
 
-Private Sub MoveTangent(ByVal StepsForward As Double, ByVal StepsLeft As Double, _
+Public Sub MoveTangent(ByVal StepsForward As Double, ByVal StepsLeft As Double, _
         ByVal FirstAngleOffset As Double, ByVal SecondAngleOffset As Double, _
         Optional factor1, Optional factor2)
   Dim ellipse_angle As Double, kappa As Double, chord As Double
@@ -940,6 +1086,21 @@ Private Sub MoveTangent(ByVal StepsForward As Double, ByVal StepsLeft As Double,
   End If
 End Sub
 
+Public Sub MoveXYBezier(ByVal x As Double, ByVal y As Double, ByVal angle1 As Double, _
+        ByVal distance1 As Double, ByVal angle2 As Double, _
+        ByVal distance2 As Double)
+
+  Dim original_angle As Double, steps As Double
+  
+  original_angle = nAngle
+  getStepsAngle x, y, steps, nAngle
+  MoveBezier steps, angle1, distance1, angle2, distance2
+  PenX = x
+  PenY = y
+  nAngle = original_angle
+
+
+End Sub
 
 Public Sub MoveBezier(ByVal steps As Double, angle1 As Double, _
         ByVal distance1 As Double, ByVal angle2 As Double, _
@@ -1013,7 +1174,7 @@ End Sub
 
 ' From https://rosettacode.org/wiki/Circles_of_given_radius_through_two_points#VBA
 Private Sub getCenterOfCircle(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, _
-      ByVal y2 As Double, ByVal r As Double, ByVal positive As Boolean, xc As Double, yc As Double)
+      ByVal y2 As Double, ByVal R As Double, ByVal positive As Boolean, xc As Double, yc As Double)
   Dim xd As Double, yd As Double, s2 As Double, sep As Double
   Dim xh As Double, yh As Double, md As Double, xs As Double, ys As Double
 
@@ -1025,15 +1186,15 @@ Private Sub getCenterOfCircle(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 A
         yh = (y1 + y2) / 2
         Dim txt As String
         If sep = 0 Then
-            Debug.Print "same points/" & IIf(r = 0, "radius is zero", "infinite solutions")
+            Debug.Print "same points/" & IIf(R = 0, "radius is zero", "infinite solutions")
         Else
-            If sep = 2 * r Then
+            If sep = 2 * R Then
                 Debug.Print "opposite ends of diameter with centre " & xh & ", " & yh & "."
             Else
-                If sep > 2 * r Then
-                    Debug.Print "too far apart " & sep & " > " & 2 * r
+                If sep > 2 * R Then
+                    Debug.Print "too far apart " & sep & " > " & 2 * R
                 Else
-                    md = Sqr(r * r - s2 / 4)
+                    md = Sqr(R * R - s2 / 4)
                     xs = md * xd / sep
                     ys = md * yd / sep
                     If positive Then
@@ -1068,3 +1229,43 @@ End Property
 Public Property Let PenTransparency(ByVal NewValue As Long)
  cPenTransparency = NewValue / 100
 End Property
+
+Private Function get_xywh(sr As ShapeRange) As Variant
+   ' calculate new top and left for printing
+  Dim shp As Shape, xmin As Double, ymin As Double, vert1 As Variant, vert2 As Variant
+  Dim rotation As Double, sin_ang As Double, xmax As Double, ymax As Double
+  Dim cos_ang As Double, i As Long, cx As Double, cy As Double
+  xmin = sr.left
+  ymin = sr.top
+  xmax = sr.left + sr.width
+  ymax = sr.top + sr.height
+  
+  For Each shp In sr.GroupItems
+    rotation = shp.rotation / 180 * [pi()]
+    cx = shp.left + shp.width / 2
+    cy = -shp.top - shp.height / 2
+    
+    
+    vert1 = Array(Array(shp.left - cx, -shp.top - cy), _
+                  Array(shp.left + shp.width - cx, -shp.top - cy), _
+                  Array(shp.left - cx, -shp.top - shp.height - cy), _
+                  Array(shp.left + shp.width - cx, -shp.top - shp.height - cy))
+    vert2 = vert1
+     sin_ang = Sin(rotation)
+     cos_ang = Cos(rotation)
+     For i = 0 To 3
+      vert2(i)(0) = vert1(i)(0) * cos_ang - vert1(i)(1) * sin_ang + cx
+      vert2(i)(1) = vert1(i)(0) * sin_ang + vert1(i)(1) * cos_ang + cy
+     Next i
+     For i = 0 To 3
+      If vert2(i)(0) < xmin Then xmin = vert2(i)(0)
+      If -vert2(i)(1) < ymin Then ymin = -vert2(i)(1)
+      If vert2(i)(0) > xmax Then xmax = vert2(i)(0)
+      If -vert2(i)(1) > ymax Then ymax = -vert2(i)(1)
+     Next i
+  Next shp
+  get_xywh = Array(xmin, ymin, xmax - xmin, ymax - ymin)
+End Function
+
+
+
