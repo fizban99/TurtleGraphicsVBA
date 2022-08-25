@@ -12,6 +12,9 @@ Option Explicit
 Private myShape As ShapeRange
 Private myShapeName As String
 Private Canvas As Chart
+Private ppt As PowerPoint.Application
+Private sld As PowerPoint.Slide
+
 
 Public Enum ttFlipH
   ttleft
@@ -87,6 +90,18 @@ Public Function Rotate(angle As Double, Optional centerX, Optional centerY, Opti
   Set Rotate = Me
 End Function
 
+
+Public Function Spin(ByVal angle As Double, Optional CopyAndRepeat As Long = 0) As clsShapeTransformer
+  Dim x As Double, y As Double
+  
+  x = myShape.left + myShape.width / 2
+  y = myShape.top + myShape.height / 2
+  
+  Set Spin = Rotate(angle, x, y, CopyAndRepeat)
+  
+End Function
+
+
 Public Function Translate(Optional x = 0, Optional y = 0, Optional steps = 0, Optional angle) As clsShapeTransformer
   Dim xo As Double, yo As Double
 
@@ -145,6 +160,7 @@ Public Function Duplicate() As clsShapeTransformer
   Set sr = myShape.Duplicate
   sr.left = myShape.left
   sr.top = myShape.top
+  Set myShape = sr
   Set Duplicate = Me
 End Function
 
@@ -153,4 +169,62 @@ Public Function Center() As clsShapeTransformer
   myShape.left = Canvas.ChartArea.width / 2 - myShape.width / 2
   myShape.top = Canvas.ChartArea.height / 2 - myShape.height / 2
   Set Center = Me
+End Function
+
+Public Function MergeShapes(Optional mergeType As MsoMergeCmd = msoMergeUnion) As clsShapeTransformer
+  Dim shp As Excel.Shape, x As Single, y As Single, w As Single, h As Single
+  Dim pptShpRng As PowerPoint.ShapeRange
+  Dim shapeArray() As Long, i As Long, pptShapeRange As PowerPoint.ShapeRange
+
+  If ppt Is Nothing Then
+    Set ppt = New PowerPoint.Application
+    Set sld = ppt.Presentations.Add(msoFalse).Slides.Add(1, 12)
+  End If
+  If myShape.Type <> msoGroup Then
+    Err.Raise vbObjectError + 514, "Turtle Graphics", _
+           "ShapeRange to merge has to be a group"
+  End If
+  
+  With myShape
+    x = .left
+    y = .top
+    h = .height
+    w = .width
+  End With
+
+  Canvas.Shapes(myShape.ZOrderPosition).Cut
+  
+  Set pptShpRng = sld.Shapes.Paste
+  With pptShpRng
+    .left = x
+    .top = y
+    .width = w
+    .height = h
+  End With
+
+  pptShpRng.Ungroup
+  ReDim shapeArray(1 To sld.Shapes.Count)
+  For i = 1 To UBound(shapeArray)
+    shapeArray(i) = i
+  Next i
+  Set pptShapeRange = sld.Shapes.Range(shapeArray)
+  pptShapeRange.MergeShapes mergeType
+  With sld.Shapes(1)
+    x = .left
+    y = .top
+    h = .height
+    w = .width
+  End With
+  sld.Shapes(1).Cut
+
+  Canvas.Paste
+  With Canvas.Shapes(Canvas.Shapes.Count)
+    .left = x
+    .top = y
+    .width = w
+    .height = h
+  End With
+  
+  Set myShape = Canvas.Shapes.Range(Array(Canvas.Shapes.Count))
+  Set MergeShapes = Me
 End Function

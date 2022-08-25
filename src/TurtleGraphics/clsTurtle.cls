@@ -96,6 +96,17 @@ Public Enum ttCurveEnding
   ttFlatBoth
 End Enum
 
+Public Enum ttCapType
+  ttroundcap
+  ttflat
+  ttsquare
+End Enum
+
+Public Enum ttJoinType
+  ttRoundJoin
+  ttBevel
+  ttMiter
+End Enum
 
 Public Enum ttArcType
   TTARC = 0
@@ -148,6 +159,8 @@ Dim NumLines As Long
 Dim penHue As Integer, penLuminosity As Integer, penSaturation As Integer
 Dim fillHue As Integer, fillLuminosity As Integer, fillSaturation As Integer
 
+Public CapType As ttCapType
+Public JoinType As ttJoinType
 Public cFillTransparency As Double
 Public cPenTransparency As Double
 Public penSize As Double
@@ -207,6 +220,7 @@ Public Function InitTurtle(ByVal CanvasName As String, ByVal TurtleName As Strin
   fillColor = ttinvisible
   RefreshLines = 10
   DrawingMode = ttscreenrefresh
+  IsCurvedPoly = False
   Me.Center
 End Function
 
@@ -264,24 +278,28 @@ Public Sub Move(ByVal steps As Double)
 
   Dim newX As Double, newY As Double, line As Shape, i As Long
   
+  If IsCurvedPoly Then
+    MoveCurved steps, 0, ttLine
+  Else
 
-  newX = PenX + Math.Cos((nAngle - INITIAL_ANGLE) * PI / 180) * steps
-  newY = PenY + Math.Sin((nAngle - INITIAL_ANGLE) * PI / 180) * steps
-  
-  NumLines = NumLines + 1
-  If IsPenDown Then
-    IsCurvedPoly = False
-    createSAoPIfNotExists PenX, PenY
-    PolyNodes = PolyNodes + 1
-    SAoP(PolyNodes) = Array(newX, newY)
-       
-    If DrawingMode = ttscreenrefresh Then
-      RecreatePoly
+    newX = PenX + Math.Cos((nAngle - INITIAL_ANGLE) * PI / 180) * steps
+    newY = PenY + Math.Sin((nAngle - INITIAL_ANGLE) * PI / 180) * steps
+    
+    NumLines = NumLines + 1
+    If IsPenDown Then
+      IsCurvedPoly = False
+      createSAoPIfNotExists PenX, PenY
+      PolyNodes = PolyNodes + 1
+      SAoP(PolyNodes) = Array(newX, newY)
+         
+      If DrawingMode = ttscreenrefresh Then
+        RecreatePoly
+      End If
     End If
+    PenX = newX
+    PenY = newY
+    RepositionTurtle
   End If
-  PenX = newX
-  PenY = newY
-  RepositionTurtle
 End Sub
 
 
@@ -303,7 +321,11 @@ Private Sub RecreatePoly()
   If IsCurvedPoly Then
     Set tempPoly = Canvas.Shapes.AddCurve(SAoP)
   Else
-    Set tempPoly = Canvas.Shapes.AddPolyline(SAoP)
+    If UBound(SAoP) > 2 Then
+      Set tempPoly = Canvas.Shapes.AddPolyline(SAoP)
+    Else
+      Set tempPoly = Canvas.Shapes.AddLine(SAoP(1)(0), SAoP(1)(1), SAoP(2)(0), SAoP(2)(1))
+    End If
   End If
   FormatShape tempPoly, False
   If NumLines > RefreshLines Or PolyNodes < RefreshLines And PolyNodes > 2 Then
@@ -330,6 +352,8 @@ Public Sub Reset()
   Me.CanvasColor = ttwhite
   Me.PenTransparency = 0
   Me.FillTransparency = 0
+  Me.JoinType = ttMiter
+  Me.CapType = ttroundcap
   Set tempPoly = Nothing
   Set PolyPoints = Nothing
   PolyNodes = 0
@@ -393,7 +417,7 @@ Public Function PenUp() As ShapeRange
     IsPenDown = False
     Set tempPoly = Nothing
     PolyNodes = 0
-    
+    IsCurvedPoly = False
   End If
   'DoEvents
 End Function
@@ -417,6 +441,18 @@ End Sub
 
 Private Sub FormatShape(shp As Shape, Optional bFill = True)
   With shp
+    
+    If CapType <> ttroundcap Or JoinType <> ttMiter Then
+      Dim reference As Variant, refShape As Shape
+      reference = Array("round_round", "flat_round", "square_round", _
+                        "round_bevel", "flat_bevel", "square_bevel", _
+                        "round_miter", "flat_miter", "square_miter")
+      
+      Set refShape = Worksheets("Canvas").Shapes(reference(CapType + JoinType * 3))
+      refShape.PickUp
+      .Apply
+ 
+    End If
     .line.ForeColor.RGB = penColor
     .line.Transparency = cPenTransparency
     If fillColor <> ttinvisible And bFill And .nodes.Count > 2 Then
@@ -453,7 +489,7 @@ Public Function Group(Optional numShapes As Long, Optional ungroupFirst As Boole
   If ungroupFirst Then
     For Each shpFrame In Canvas.Shapes
       If shpFrame.Type = 6 Then
-        shpFrame.ungroup
+        shpFrame.Ungroup
       End If
     Next
   End If
@@ -488,6 +524,15 @@ Public Function Group(Optional numShapes As Long, Optional ungroupFirst As Boole
 
   End If
 End Function
+
+Public Sub Ungroup()
+  Dim shpFrame As Shape
+  For Each shpFrame In Canvas.Shapes
+    If shpFrame.Type = msoGroup Then
+      shpFrame.Ungroup
+    End If
+  Next
+End Sub
 
 Public Sub TurnRight(ByVal angle As Double)
   Dim dec As Double
@@ -919,11 +964,13 @@ Sub MoveCurved(ByVal steps As Double, ByVal radius As Double, _
       nAngle = nAngle + 90
     Else
       nAngle = nAngle - 90
+      w = -w
+      radius = -radius
     End If
     
     MoveTangent radius, w, 0, 0
 
-    If radius > 0 Then
+    If w > 0 Then
       nAngle = nAngle - 90
     Else
       nAngle = nAngle + 90
@@ -1111,6 +1158,9 @@ Public Sub MoveBezier(ByVal steps As Double, angle1 As Double, _
   Dim cx1 As Double, cy1 As Double, cx2 As Double, cy2 As Double
   Dim originalAngle As Double, restoreAngle As Boolean
   
+  If steps = 0 Then
+    Exit Sub
+  End If
   restoreAngle = False
   If steps < 0 Then
     originalAngle = nAngle
@@ -1208,10 +1258,6 @@ Private Sub getCenterOfCircle(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 A
             End If
         End If
         
-End Sub
-
-Private Sub Class_Initialize()
-
 End Sub
 
 Public Property Get FillTransparency() As Long

@@ -18,7 +18,7 @@ Sub butterfly()
   
   turtle.Reset
   turtle.DrawingMode = ttNoScreenRefresh
-  turtle.TurnLeft 45
+  turtle.turnleft 45
   
   wingColors = Array(ttred, ttblue, ttmagenta, ttyellow, ttgreen, ttgold)
   With turtle:
@@ -35,11 +35,11 @@ Sub butterfly()
         End If
         .Movecurved WingSize, WingSize / 4, ttPetalfd
         .Movecurved -WingSize, WingSize / 4, ttPetalbk
-        .TurnLeft 90
+        .turnleft 90
       Next i
       .PenUp
     Next size
-    .pointindirection 0
+    .PointInDirection 0
     .turnright 17
     .fillColor = ttinvisible
     .penColor = ttblack
@@ -47,7 +47,7 @@ Sub butterfly()
     .Movecurved 100, 95, ttQuarterEllipse
     .PenUp
     .Move -100
-    .TurnLeft 17 * 2
+    .turnleft 17 * 2
     .PenDown
     .Movecurved 100, -95, ttQuarterEllipse
     .PenUp
@@ -61,7 +61,7 @@ Sub butterfly2()
   
   turtle.Reset
   turtle.DrawingMode = ttNoScreenRefresh
-  turtle.TurnLeft 45
+  turtle.turnleft 45
   
   
   With turtle:
@@ -79,11 +79,11 @@ Sub butterfly2()
         End If
         .Movecurved WingSize, WingSize / 4, ttPetalfd
         .Movecurved -WingSize, WingSize / 4, ttPetalbk
-        .TurnLeft 90
+        .turnleft 90
       Next i
       .PenUp
     Next size
-    .pointindirection 0
+    .PointInDirection 0
     .turnright 17
     .fillColor = ttinvisible
     .penColor = ttblack
@@ -91,12 +91,12 @@ Sub butterfly2()
     .Movecurved 100, 95, ttQuarterEllipse
     .PenUp
     .Move -100
-    .TurnLeft 17 * 2
+    .turnleft 17 * 2
     .PenDown
     .Movecurved 100, -95, ttQuarterEllipse
     .PenUp
     .Move -100
-    .pointindirection 90
+    .PointInDirection 90
   End With
 End Sub
 
@@ -109,7 +109,7 @@ Sub Badge()
   With turtle
     .Clear
     .PenUp
-    .pointindirection 0
+    .PointInDirection 0
     .FillType = ttSolid
     .fillColor = ttgold
     .penColor = ttinvisible
@@ -131,7 +131,7 @@ Sub Badge()
     .penColor = ttwhite
     .penSize = length / points / 2
     .fillColor = ttinvisible
-    .pointindirection 90
+    .PointInDirection 90
     .PenDown
     .Ellipse 2 * length * 0.6 - length / points / 3
     .PenUp
@@ -158,9 +158,10 @@ Sub flower_arc()
   color = ttblack
   
   With turtle
-    .center
+    .Reset
     .Clear
     .fillColor = color
+    
     .PenDown
     For j = 1 To petals
       .turnright 360 / petals
@@ -183,7 +184,7 @@ Sub flower_ellipse()
   color = ttblack
   
   With turtle
-    .center
+    .Reset
     .Clear
     .fillColor = color
     .PenDown
@@ -236,7 +237,7 @@ Sub sierpinski(length As Long, depth As Long)
     If depth = 0 Then
       For i = 0 To 2
         .Move length
-        .TurnLeft 120
+        .turnleft 120
       Next i
       Exit Sub
     End If
@@ -244,11 +245,11 @@ Sub sierpinski(length As Long, depth As Long)
     .Move length / 2
     sierpinski length / 2, depth - 1
     .Move -length / 2
-    .TurnLeft 60
+    .turnleft 60
     .Move length / 2
     .turnright 60
     sierpinski length / 2, depth - 1
-    .TurnLeft 60
+    .turnleft 60
     .Move -length / 2
     .turnright 60
   End With
@@ -374,7 +375,7 @@ Sub batik_flower()
     .PenUp
     .penColor = ttinvisible
     'Pistils
-    .TurnLeft 90
+    .turnleft 90
     .Move r
     .turnright 45
     .fillColor = RGB(0, 128, 0)
@@ -386,15 +387,15 @@ Sub batik_flower()
       .Movecurved length, length, ttCusp
       .turnright 90
       .Movecurved r / 2, 0, ttLine
-      .TurnLeft 90
+      .turnleft 90
     Next i
     .PenUp
     
     'Petals
     length = .getSideLength(r, sides)
-    .pointindirection 90
+    .PointInDirection 90
     .center
-    .TurnLeft 360 / (2 * sides)
+    .turnleft 360 / (2 * sides)
     .Move r
     .turnright 90 + 360 / (2 * sides)
     .fillColor = RGB(191, 191, 0)
@@ -406,12 +407,12 @@ Sub batik_flower()
     .PenUp
   
     
-    .TurnLeft 90 + 360 / (2 * sides)
+    .turnleft 90 + 360 / (2 * sides)
     .Move -r
 
 
     .fillColor = ttblack
-    .TurnLeft 360 / 32
+    .turnleft 360 / 32
     star 16, r * 1.1, r * 1.1 * 0.6
     .turnright 360 / 32
     .fillColor = vbWhite
@@ -420,7 +421,7 @@ Sub batik_flower()
         .PenDown
         .Movecurved interior_length, interior_length / 7, ttPetalfd
         .Movecurved -interior_length, interior_length / 7, ttPetalbk
-        .TurnLeft 360 / interior_sides
+        .turnleft 360 / interior_sides
         .PenUp
     Next i
     .PenDown
@@ -442,11 +443,11 @@ Sub Koch(depth As Long, length As Double)
       Exit Sub
     End If
     Koch depth - 1, length / 3
-    .TurnLeft 60
+    .turnleft 60
     Koch depth - 1, length / 3
     .turnright 120
     Koch depth - 1, length / 3
-    .TurnLeft 60
+    .turnleft 60
     Koch depth - 1, length / 3
   End With
 End Sub
@@ -472,7 +473,7 @@ Sub draw_snowflake()
       .turnright 120
     Next i
     shapetransformer(.PenUp()).center
-    
+    shapetransformer(.Group()).MergeShapes msoMergeSubtract
     
     .fillColor = ttinvisible
   End With
@@ -563,11 +564,15 @@ Sub PolySpiral()
       .fillColor = ttblack
       Do While length > d
         .Move length
-        .TurnLeft angle
+        .turnleft angle
         length = length - d
       Loop
       shapetransformer(.PenUp()).center
       .Hide
+      .PenDown
+      .center
+      .Ellipse 300, 300
+      shapetransformer(.Group()).MergeShapes msoMergeIntersect
     End With
     
 End Sub
@@ -596,6 +601,18 @@ Dim i
         length = length + d
       Next i
       .PenUp
+      .center
+      .PenDown
+      .fillColor = ttwhite
+      .penColor = ttinvisible
+      .Ellipse 500, 500
+      .Ellipse 300, 300
+      
+      shapetransformer(.Group(2)).MergeShapes msoMergeSubtract
+      .fillColor = ttinvisible
+      .penSize = 4
+      .penColor = ttblack
+      .Ellipse 300, 300
     End With
     
 End Sub
@@ -684,7 +701,7 @@ Sub pookkalam1()
     ' 12 hexagons
     
     .penColor = RGB(136, 66, 0)
-    .pointindirection 90
+    .PointInDirection 90
     .PenDown
     length = .getSideLength(180, 6) / 2
     .fillColor = ttinvisible
@@ -723,7 +740,7 @@ Sub pookkalam1()
     .Ellipse length * 3, length * 3
     
     'curved radials
-    .pointindirection 22.5
+    .PointInDirection 22.5
     
     Dim stepsForward As Double
 
@@ -756,7 +773,7 @@ Sub mandala1()
     For layer = 3 To 1 Step -1
       With ShapePattern
         If layer = 3 Or layer = 1 Then
-          .rotate 360 / 10 / 2
+          .Rotate 360 / 10 / 2
         End If
         If layer = 1 Then
           'clear central part
@@ -765,20 +782,20 @@ Sub mandala1()
           turtle.Ellipse 100, 100
         End If
         For i = 1 To 5 - layer
-          .rotate 360 / 10, copyandrepeat:=10
+          .Rotate 360 / 10, copyandrepeat:=10
           .Resize 0.85
         Next i
         .Resize 1.255
         If layer = 3 Then
-          .rotate -360 / 10 / 2
+          .Rotate -360 / 10 / 2
         End If
         .Translate -15
       End With
     Next layer
     With autoshapetransformer(msoShapeOval, 30, 20, ttblack)
       .Translate 145
-      .rotate -18
-      .rotate -36, copyandrepeat:=9
+      .Rotate -18
+      .Rotate -36, copyandrepeat:=9
     End With
     
     .penColor = ttblack
@@ -796,15 +813,10 @@ Sub overlapped_flower()
   With turtle
     .Reset
     .PenUp
-    .Move 100
     .fillColor = ttblack
     .penColor = ttwhite
     .penSize = 2
-    .PenDown
-    .Movecurved -100, 70, ttarccircle
-    .PenUp
-    .turnright 360 / 8
-    For i = 1 To 7
+    For i = 1 To 8
     .PenDown
     .Movecurved 100, 70, ttarccircle
     .Movecurved -100, 70, ttarccircle
@@ -813,7 +825,7 @@ Sub overlapped_flower()
     Next i
     .PenDown
     .center
-    .pointindirection 90
+    .PointInDirection 90
     .Movecurved 100, 70, ttarccircle
     .PenUp
     .Hide
@@ -827,31 +839,97 @@ Sub framed_hexagon()
     With turtle
       .Reset
       .fillColor = 12632256
-      .TurnLeft 90
+      .turnleft 90
       .Move 100
-      .TurnLeft 120
+      .turnleft 120
       .Move 50
-      .TurnLeft 60
+      .turnleft 60
       .Move 100
-      .TurnLeft 60
+      .turnleft 60
       .Move 100
-      .TurnLeft 60
+      .turnleft 60
       .Move 50
-      .TurnLeft 120
+      .turnleft 120
       .Move 100
       t = 2 * Sqr(50 ^ 2 - 25 ^ 2)
-      shapetransformer(.PenUp()).Translate(-t).rotate 360 / 6, copyandrepeat:=5
+      shapetransformer(.PenUp()).Translate(-t).Rotate 360 / 6, copyandrepeat:=5
       
     End With
 End Sub
 
 
 
+Sub intertwined_rect_substract()
+  Dim r As Double, d As Double, sides As Long
+  Dim side1 As Double, side2 As Double
+  
+  r = 150
+  d = 15
+  sides = 11
+  With turtle
+    side1 = .getSideLength(r, sides / 2)
+    side2 = .getSideLength(r + d, sides / 2)
+    .Reset
+    .JoinType = ttRoundJoin
+    .PenUp
+    'side to cut
+    .turnleft 90
+    .Move r + d
+    .turnright 90 + 360 / sides
+    .PenDown
+    .penColor = ttblack
+    .fillColor = ttgold
+    .Move side2
+    .turnright 360 / sides * 2
+    .Move side2
+    .turnright 90 + 360 / sides
+    .Move d
+    .turnright 90 - 360 / sides
+    .Move side1
+    .turnleft 360 / sides * 2
+    .Move side1
+    .turnright 90 - 360 / sides
+    .PenUp
+    'first cutter
+    .center
+    .PointInDirection 360 / sides
+    .Move r + d
+    .turnright 90 + 360 / sides
+    .PenDown
+    .Move side2 / 2
+    .turnright 90 + 360 / side2 * 2
+    .Move side1
+    .turnright 90
+    .Move side2
+    .turnright 90
+    .Move side1
+    .PenUp
+    shapetransformer(.Group()).MergeShapes (msoMergeSubtract)
+    'second cutter
+    .center
+    .PointInDirection 360 / sides * 3
+    .Move r
+    .turnright 90 + 360 / sides
+    .PenDown
+    .Move side1
+    .turnleft 90
+    .Move side1
+    .turnleft 90
+    .Move side1
+    .PenUp
+    shapetransformer(.Group()).MergeShapes (msoMergeSubtract)
+    shapetransformer(.Group()).Rotate 360 / sides * 2, copyandrepeat:=10
+  End With
+  
+
+End Sub
+
 
 Sub intertwinded_rect()
   Dim side1 As Double, side2 As Double, i As Long
   Dim r As Double, j As Long, d As Double, start_x As Double, start_y As Double
   Dim firstX As Double, firstY As Double, sides As Long
+  Dim shift As Double, sideb As Double, length As Double
   
   r = 150
   d = 15
@@ -862,50 +940,133 @@ Sub intertwinded_rect()
     .PenUp
     side1 = .getSideLength(r, sides / 2)
     side2 = .getSideLength(r + d, sides / 2)
-    .TurnLeft 90 + 360 / sides / 2
+    
+    .JoinType = ttRoundJoin
+    .turnleft 90
     .Move r
-    .pointindirection 90
-    .fillColor = ttwhite
+    .turnright 90 + 360 / sides
+    ' draw orange background
+    .PenDown
+    .penColor = ttgold
+    .fillColor = ttgold
+    length = side1
+    For j = 1 To 2
+      For i = 1 To sides
+          .Move length
+          .turnright 360 / 11 * 2
+      Next i
+      If j = 1 Then
+        .turnleft 90 + 360 / sides
+        .Move d
+        .turnright 90 + 360 / sides
+        length = side2
+      End If
+
+    Next j
+    .PenUp
+    .PointInDirection 90
+    .center
+    .turnleft 90 + 360 / sides
+    .Move r
+    .penSize = 1
+    .PointInDirection 90
+    .penColor = ttblack
+
+    .fillColor = ttinvisible
+    .PenDown
+
+    length = side1
+    ' draw black background
+    For j = 1 To 2
+      For i = 1 To sides
+          .Move length
+          .turnright 360 / 11 * 2
+      Next i
+      .PenUp
+      .turnleft 90 + 360 / sides
+      .Move d
+      .PointInDirection 90
+      length = side2
+      .PenDown
+      .penColor = ttblack
+    Next j
+    .PenUp
+
+    .PointInDirection 90
+    .center
+    .turnleft 90 + 360 / sides
+    .Move r
     firstX = .x
     firstY = .y
+    .PointInDirection 90
+    .fillColor = ttwhite
+    ' draw twice
+    ' the first one the lines up
+    ' the second one the lines down
+    ' since they overlap the lines up
+    ' a shift at the beginning is required for the background
+    ' (points)
+    ' the same shift overlaps the lines
+    .JoinType = ttRoundJoin
+    .CapType = ttflat
+    shift = 5
     For j = 1 To 2
       For i = 1 To sides
         start_x = .x
         start_y = .y
         If j = 2 Then
           .PenDown
+          .Move shift
           .Point
+        Else
+          .Move shift
         End If
-        .Move side1 / 2
-        .Point
+        .Move side1 / 2 - shift * 2
+
         If j = 2 Then
+          .Point
+          .Move shift
           .PenUp
         Else
+          .Move shift
+          .Point
           .PenDown
         End If
-        .Move side1 / 2
+        .Move side1 / 2 - shift
         If j = 1 Then
-          .PenUp
           .Point
+          .Move shift
+
+          .PenUp
+        Else
+          .Move shift
         End If
-        .TurnLeft 90 - 360 / sides
+        .turnleft 90 - 360 / sides
         .Move d
-        .TurnLeft 90 + 360 / sides
+        .turnleft 90 + 360 / sides
         If j = 1 Then
           .PenDown
+          .Move shift
           .Point
+        Else
+          .Move shift
         End If
-        .Move side2 / 2
-        .Point
+        .Move side2 / 2 - shift
+        
         If j = 1 Then
+          .Point
           .PenUp
         Else
           .PenDown
-          .Move side2 / 2
-          .PenUp
+          .Move shift
           .Point
+          .Move side2 / 2 - shift * 2
+          .Point
+          .Move shift
+          .PenUp
         End If
-        .penColor = ttinvisible
+        .penColor = ttgold
+        .fillColor = ttgold
         .ClosePoints SendToBack:=2
         .Group 3, ungroupfirst:=False
         .penColor = ttblack
@@ -916,7 +1077,7 @@ Sub intertwinded_rect()
         .PenUp
       Next i
       .gotoxy firstX, firstY
-      .pointindirection 90
+      .PointInDirection 90
     Next j
     
   End With
@@ -937,11 +1098,9 @@ Sub interwinded_rect_single()
     .PenUp
     side1 = .getSideLength(r, 11 / 2)
     side2 = .getSideLength(r + d, 11 / 2)
-    hypotenuse1 = side1 / Cos(angle / 180 * [pi()]) / 2
-    hypotenuse2 = side2 / Cos(angle / 180 * [pi()]) / 2
-    .TurnLeft 90 + 360 / 11 / 2
+    .turnleft 90 + 360 / 11
     .Move r
-    .pointindirection 90
+    .PointInDirection 90
     .fillColor = ttwhite
     factor = 1
 
@@ -953,9 +1112,9 @@ Sub interwinded_rect_single()
         .Move side1
         .Point
         .PenUp
-        .TurnLeft factor * (90 - 360 / 11)
+        .turnleft factor * (90 - 360 / 11)
         .Move d
-        .TurnLeft factor * (90 + 360 / 11)
+        .turnleft factor * (90 + 360 / 11)
         .PenDown
         .Point
         '.MoveCurved hypotenuse2, -hypotenuse2, ttarccircle
@@ -998,10 +1157,10 @@ Sub intertwinded_star()
     side2 = .getSideLength(r + d, sides / 2)
     hypotenuse1 = side1 / Cos(angle / 180 * [pi()]) / 2
     hypotenuse2 = side2 / Cos(angle / 180 * [pi()]) / 2
-    .TurnLeft 90 + 360 / sides / 2
+    .turnleft 90 + 360 / sides
     .Move r
-    .pointindirection 90
-    .fillColor = ttwhite
+    .PointInDirection 90
+    .fillColor = ttgold
     firstX = .x
     firstY = .y
     'Repeat twice
@@ -1016,28 +1175,28 @@ Sub intertwinded_star()
         End If
         .turnright angle
         .Move hypotenuse1
-        .TurnLeft angle
+        .turnleft angle
         .Point
         If j = 2 Then
           .PenUp
         Else
           .PenDown
         End If
-        .TurnLeft angle
+        .turnleft angle
         .Move hypotenuse1
         .turnright angle
         If j = 1 Then
           .PenUp
           .Point
         End If
-        .TurnLeft 90 - 360 / sides
+        .turnleft 90 - 360 / sides
         .Move d
-        .TurnLeft 90 + 360 / sides
+        .turnleft 90 + 360 / sides
         If j = 1 Then
           .PenDown
           .Point
         End If
-        .TurnLeft angle
+        .turnleft angle
         .Move hypotenuse2
         .turnright angle
         .Point
@@ -1047,16 +1206,20 @@ Sub intertwinded_star()
           .PenDown
           .turnright angle
           .Move hypotenuse2
-          .TurnLeft angle
+          .turnleft angle
           .PenUp
           .Point
         End If
 
-        .penColor = ttinvisible
+        .penColor = ttgold
+        .penSize = 0
+        .fillColor = ttgold
         .ClosePoints SendToBack:=2
 
         .Group 3, ungroupfirst:=False
         .penColor = ttblack
+        .fillColor = ttinvisible
+        .penSize = 1
         .gotoxy start_x, start_y
         .turnright 180
         .Move side1
@@ -1064,12 +1227,55 @@ Sub intertwinded_star()
         .PenUp
       Next i
       .gotoxy firstX, firstY
-      .pointindirection 90
+      .PointInDirection 90
     Next j
     
   End With
 End Sub
 
+
+
+Sub intertwinded_star_single()
+  Dim side1 As Double, side2 As Double, i As Long, angle As Double
+  Dim r As Double, j As Long, d As Double, start_x As Double, start_y As Double
+  Dim firstX As Double, firstY As Double, sides As Long
+  Dim hypotenuse1 As Double, hypotenuse2 As Double
+  
+  r = 147
+  d = 56
+  sides = 11
+  
+  angle = 22.5
+
+  With turtle
+    .Reset
+    .penColor = ttgold
+    side1 = .getSideLength(r + d / 2, sides / 2)
+    'side2 = .getSideLength(r + d, sides / 2)
+    hypotenuse1 = side1 / Cos(angle / 180 * [pi()]) / 2
+    .turnleft 90 + 360 / sides
+    .PenUp
+    .Move r + d / 2
+    .penSize = d / 2
+    .PointInDirection 90
+    .fillColor = ttinvisible
+    .PenDown
+      For i = 1 To sides
+        .turnright angle
+        .Move hypotenuse1
+        .turnleft angle
+        .turnleft angle
+        .Move hypotenuse1
+        .turnright angle
+        .turnright 360 / sides * 2
+      Next i
+      .PenUp
+      .gotoxy firstX, firstY
+      .PointInDirection 90
+
+    
+  End With
+End Sub
 
 
 Sub intertwinded_curved_transform()
@@ -1097,7 +1303,7 @@ Sub intertwinded_curved_transform()
     disp = d * Cos(180 / 11 / [pi()])
     radius2 = radius1 + d
     hypotenuse1 = side1 / Cos(angle / 180 * [pi()]) / 2
-    .TurnLeft 90
+    .turnleft 90
     .Move r
     firstX = .x
     firstY = .y
@@ -1105,16 +1311,16 @@ Sub intertwinded_curved_transform()
      arcx_end = .x
      arcy_end = .y
     .Move -disp
-    .pointindirection 90 + 360 / sides
+    .PointInDirection 90 + 360 / sides
     For i = 1 To 2
       .PenDown
       .turnright angle
       .Movecurved hypotenuse1, radius1, ttarccircle
-      .TurnLeft angle
+      .turnleft angle
       If i = 1 Then
         .PenUp
       End If
-      .TurnLeft 90
+      .turnleft 90
       .Movecurved disp, 0, ttLine
       If i = 1 Then
         .PenDown
@@ -1123,17 +1329,17 @@ Sub intertwinded_curved_transform()
       .turnright angle
       shapetransformer(.PenUp()).ZOrder msoSendToBack
       .gotoxy firstX, firstY
-      .pointindirection 90 + 360 / sides
+      .PointInDirection 90 + 360 / sides
       .penColor = ttgold
+      .penSize = 0
       .fillColor = ttgold
     Next i
     With shapetransformer(.Group())
-      .rotate 360 / 11, copyandrepeat:=11
+      .Rotate 360 / 11, copyandrepeat:=11
       .flipH ttleft
-      .rotate 360 / 11, copyandrepeat:=10
+      .Rotate 360 / 11, copyandrepeat:=11
     End With
-   
-    
+    .Hide
   End With
 End Sub
 
@@ -1142,36 +1348,61 @@ Sub squared_knot()
 
   With turtle
     .Reset
-    .fillColor = ttAqua
+    .fillColor = ttgold
     .Move 100
-    .TurnLeft 90
+    .turnleft 90
     .Move 25
-    .TurnLeft 90
+    .turnleft 90
     .Move 75
     For i = 1 To 3
       .turnright 90
       .Move 25
     Next i
-    .TurnLeft 90
+    .turnleft 90
     .Move 25
-    .TurnLeft 90
+    .turnleft 90
     .Move 50
-    .TurnLeft 90
+    .turnleft 90
     .Move 75
-    .TurnLeft 90
+    .turnleft 90
     .Move 75
+    
+
     With shapetransformer(.PenUp())
-      .Duplicate.flipH (ttRight)
-      .Translate (25)
-      .flipV (ttBottom)
-      .Translate y:=-25
+        .Duplicate.Spin 90
+        .Translate 87.5, 12.5
+
+        .Duplicate.Spin 90
+        .Translate 37.5, 37.5
+    End With
+    With shapetransformer(.Group())
+
+        .Duplicate.flipV().flipH
+        .Translate y:=100
+    End With
+    .center
+    .PointInDirection 180
+    .PenDown
+    For i = 1 To 2
+      .Move 75
+      .turnleft 90
+      .Move 25
+      .turnleft 90
+    Next i
+    With shapetransformer(.PenUp())
+      .Translate x:=50
+      .Duplicate.Translate x:=100
+      .Duplicate.Spin 90
+      .Translate x:=-50
+    End With
+    With shapetransformer(.Group())
+      .Spin 45
     End With
   End With
-  
+    
+    
+    
 End Sub
-
-
-
 
 
 Sub fat_star()
@@ -1188,13 +1419,13 @@ Sub fat_star()
 
   With turtle
     .Reset
-
+    .JoinType = ttRoundJoin
     .PenUp
     side1 = .getSideLength(r, sides)
     hypotenuse1 = side1 / Cos(angle / 180 * [pi()]) / 2
-    .TurnLeft 90 + 360 / sides / 2
+    .turnleft 90 + 360 / sides / 2
     .Move r
-    .pointindirection 90
+    .PointInDirection 90
     .fillColor = ttblack
     firstX = .x
     firstY = .y
@@ -1207,15 +1438,15 @@ Sub fat_star()
         start_y = .y
         .turnright angle
         .Movecurved hypotenuse1, hypotenuse1 * 1.5, ttarccircle
-        .TurnLeft angle
-        .TurnLeft angle
+        .turnleft angle
+        .turnleft angle
         .Movecurved hypotenuse1, hypotenuse1 * 1.5, ttarccircle
         .turnright angle
         .turnright 360 / sides
       Next i
       .PenUp
       .gotoxy firstX, firstY
-      .pointindirection 90
+      .PointInDirection 90
       .penColor = ttwhite
       .penSize = d - 2
     Next j
@@ -1243,9 +1474,9 @@ Sub fat_star2()
     .PenUp
     side1 = .getSideLength(r, sides / 2)
     hypotenuse1 = side1 / Cos(angle / 180 * [pi()]) / 2
-    .TurnLeft 90 + 360 / sides / 2
+    .turnleft 90 + 360 / sides / 2
     .Move r
-    .pointindirection 90
+    .PointInDirection 90
     .fillColor = ttblack
     .penColor = ttblack
     firstX = .x
@@ -1259,15 +1490,15 @@ Sub fat_star2()
         start_y = .y
         .turnright angle
         .Movecurved hypotenuse1, hypotenuse1 * 1.5, ttarccircle
-        .TurnLeft angle
-        .TurnLeft angle
+        .turnleft angle
+        .turnleft angle
         .Movecurved hypotenuse1, hypotenuse1 * 1.5, ttarccircle
         .turnright angle
         .turnright 360 / sides * 2
       Next i
       .PenUp
       .gotoxy firstX, firstY
-      .pointindirection 90
+      .PointInDirection 90
       .penColor = ttwhite
       .penSize = d - 2
     Next j
@@ -1275,6 +1506,87 @@ Sub fat_star2()
     autoshapetransformer msoShapeRectangle, 450, 450, ttinvisible, ttblack
     End With
   End With
+End Sub
+
+
+
+Sub triquetra_arc(side_ext As Double, side_int As Double, r As Double)
+  Dim width As Single
+  
+  width = (side_ext - side_int) / 2
+  With turtle
+    .center
+    .PointInDirection 0
+    .PenUp
+    .Move r
+    .PenDown
+    .turnright 90 + 60
+    .Movecurved side_ext, -side_ext / 2, ttHalfEllipse
+    .turnleft 180
+    .PenUp
+    .Move width
+    .PenDown
+    .Movecurved side_int, side_int / 2, ttHalfEllipse
+    'add a margin to avoid a hanging line
+    .turnright 360 / 3
+    .Move width
+    .PenUp
+    With shapetransformer(.Group(2))
+      .MergeShapes msoMergeSubtract
+    End With
+  End With
+
+
+End Sub
+
+Sub triquetra()
+  Dim side_ext As Double, width As Single, side_int As Double, r As Double
+  
+  r = 100
+  
+  width = 20
+  With turtle
+    .Reset
+    .fillColor = ttgold
+    side_ext = .getSideLength(r, 3)
+    side_int = side_ext - width * 2
+    triquetra_arc side_ext, side_int, r
+    .center
+    .PointInDirection 180
+    .Move side_ext * Sqr(3) / 2 - r
+    .PointInDirection 0
+    .PenDown
+    .Ellipse side_ext, side_ext
+    .PenUp
+    shapetransformer(.Group()).MergeShapes msoMergeSubtract
+    .PenDown
+    'draw an arc for the second time
+    triquetra_arc side_ext, side_int, r
+    
+    .center
+    .PointInDirection 360 / 3 * 2
+    .Move r
+    .PointInDirection 30
+    .Move width
+    .PenDown
+    .turnright 45
+    .Movecurved side_int / Sqr(2), -side_int / 2, ttarccircle
+    .PointInDirection 90
+    .Move side_ext / 2
+    .PointInDirection 180
+    .Move side_ext / 2
+    .PenUp
+    shapetransformer(.Group(2)).MergeShapes msoMergeSubtract
+    shapetransformer(.Group(1)).flipH(ttRight).Translate x:=-width
+    With shapetransformer(.Group())
+      .MergeShapes (msoMergeUnion)
+
+      .Rotate 120, copyandrepeat:=2
+    End With
+
+    
+  End With
+  
 End Sub
 
 
