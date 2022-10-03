@@ -1653,7 +1653,7 @@ Sub phyllotaxis()
     .penColor = ttinvisible
     .DrawingMode = ttScreenRefresh
     For i = 0 To 500
-      angle = i * 137.3
+      angle = i * 137.508
       r = c * Sqr(i)
       .PointInDirection angle
       .FillHueShift 1
@@ -1670,7 +1670,7 @@ Sub phyllotaxis()
 End Sub
 
 
-Sub test()
+Sub chussy_mandala()
   Dim g As ShapeRange, side As Variant, s As Double, fillcolor As Long, i As Long
   
   
