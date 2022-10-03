@@ -41,9 +41,9 @@ Private Sub getCanvasCenter(centerX, centerY, ByRef xc As Double, yc As Double)
   End If
 End Sub
 
-Private Sub getShapeCenter(ByRef x As Double, ByRef y As Double)
-  x = myShape.left + myShape.width / 2
-  y = myShape.top + myShape.height / 2
+Private Sub getShapeCenter(ByRef X As Double, ByRef Y As Double)
+  X = myShape.left + myShape.width / 2
+  Y = myShape.top + myShape.height / 2
 End Sub
 
 Public Sub InitTransformer(shp As ShapeRange)
@@ -55,35 +55,35 @@ End Sub
 
 Public Function Rotate(angle As Double, Optional centerX, Optional centerY, Optional CopyAndRepeat As Long = 0)
   Dim R As Double, xc As Double, yc As Double, xo As Double, yo As Double
-  Dim x As Double, y As Double, currentAngle As Double, sr As ShapeRange
+  Dim X As Double, Y As Double, currentAngle As Double, sr As ShapeRange
   Dim repetitions As Long
   
   getCanvasCenter centerX, centerY, xc, yc
-  getShapeCenter x, y
+  getShapeCenter X, Y
   Do
     If CopyAndRepeat > 0 Then
       Me.Duplicate
     End If
-    If x - xc = 0 Then
-      If y - yc < 0 Then
+    If X - xc = 0 Then
+      If Y - yc < 0 Then
         currentAngle = -[pi()] / 2
       Else
         currentAngle = [pi()] / 2
       End If
     Else
-      currentAngle = Atn((y - yc) / (x - xc))
-      If x - xc < 0 Then
+      currentAngle = Atn((Y - yc) / (X - xc))
+      If X - xc < 0 Then
         currentAngle = currentAngle - [pi()]
       End If
     End If
-    R = Sqr((x - xc) ^ 2 + (y - yc) ^ 2)
+    R = Sqr((X - xc) ^ 2 + (Y - yc) ^ 2)
     xo = R * Cos((angle * [pi()] / 180) + currentAngle)
     yo = R * Sin((angle * [pi()] / 180) + currentAngle)
     
-    x = xc + xo
-    y = yc + yo
-    myShape.left = x - myShape.width / 2
-    myShape.top = y - myShape.height / 2
+    X = xc + xo
+    Y = yc + yo
+    myShape.left = X - myShape.width / 2
+    myShape.top = Y - myShape.height / 2
     myShape.rotation = myShape.rotation + angle
     repetitions = repetitions + 1
   Loop Until repetitions >= CopyAndRepeat
@@ -92,21 +92,21 @@ End Function
 
 
 Public Function Spin(ByVal angle As Double, Optional CopyAndRepeat As Long = 0) As clsShapeTransformer
-  Dim x As Double, y As Double
+  Dim X As Double, Y As Double
   
-  x = myShape.left + myShape.width / 2
-  y = myShape.top + myShape.height / 2
+  X = myShape.left + myShape.width / 2
+  Y = myShape.top + myShape.height / 2
   
-  Set Spin = Rotate(angle, x, y, CopyAndRepeat)
+  Set Spin = Rotate(angle, X, Y, CopyAndRepeat)
   
 End Function
 
 
-Public Function Translate(Optional x = 0, Optional y = 0, Optional steps = 0, Optional angle) As clsShapeTransformer
+Public Function Translate(Optional X = 0, Optional Y = 0, Optional steps = 0, Optional angle) As clsShapeTransformer
   Dim xo As Double, yo As Double
 
-  myShape.left = myShape.left + x
-  myShape.top = myShape.top + y
+  myShape.left = myShape.left + X
+  myShape.top = myShape.top + Y
   If Not IsMissing(angle) Then
     xo = steps * Cos(angle * [pi()] / 180)
     yo = steps * Sin(angle * [pi()] / 180)
@@ -172,7 +172,7 @@ Public Function Center() As clsShapeTransformer
 End Function
 
 Public Function MergeShapes(Optional mergeType As MsoMergeCmd = msoMergeUnion) As clsShapeTransformer
-  Dim shp As Excel.Shape, x As Single, y As Single, w As Single, h As Single
+  Dim shp As Excel.shape, X As Single, Y As Single, w As Single, h As Single
   Dim pptShpRng As PowerPoint.ShapeRange
   Dim shapeArray() As Long, i As Long, pptShapeRange As PowerPoint.ShapeRange
 
@@ -186,8 +186,8 @@ Public Function MergeShapes(Optional mergeType As MsoMergeCmd = msoMergeUnion) A
   End If
   
   With myShape
-    x = .left
-    y = .top
+    X = .left
+    Y = .top
     h = .height
     w = .width
   End With
@@ -196,8 +196,8 @@ Public Function MergeShapes(Optional mergeType As MsoMergeCmd = msoMergeUnion) A
   
   Set pptShpRng = sld.Shapes.Paste
   With pptShpRng
-    .left = x
-    .top = y
+    .left = X
+    .top = Y
     .width = w
     .height = h
   End With
@@ -210,8 +210,8 @@ Public Function MergeShapes(Optional mergeType As MsoMergeCmd = msoMergeUnion) A
   Set pptShapeRange = sld.Shapes.Range(shapeArray)
   pptShapeRange.MergeShapes mergeType
   With sld.Shapes(1)
-    x = .left
-    y = .top
+    X = .left
+    Y = .top
     h = .height
     w = .width
   End With
@@ -219,8 +219,8 @@ Public Function MergeShapes(Optional mergeType As MsoMergeCmd = msoMergeUnion) A
 
   Canvas.Paste
   With Canvas.Shapes(Canvas.Shapes.Count)
-    .left = x
-    .top = y
+    .left = X
+    .top = Y
     .width = w
     .height = h
   End With

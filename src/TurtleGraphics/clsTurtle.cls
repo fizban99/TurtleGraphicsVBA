@@ -17,7 +17,7 @@ Option Explicit
 
 Private Declare Function OpenClipboard _
     Lib "user32" ( _
-        ByVal hwnd As Long) _
+        ByVal hWnd As Long) _
 As Long
 
 Private Declare Function CloseClipboard Lib "user32" () As Long
@@ -62,7 +62,7 @@ Public Enum ttColors
   ttgreen = vbGreen
   ttgold = 55295
   ttorange = 52479
-  ttBrown = 13209
+  ttbrown = 13209
   ttAqua = 13421619
   ttSkyBlue = 16763904
   ttViolet = 8388736
@@ -119,7 +119,7 @@ Public Enum ttLineStyle
 End Enum
 
 Public Enum ttDrawingMode
-  ttscreenrefresh = 1
+  ttScreenRefresh = 1
   ttNoScreenRefresh = 2
 End Enum
  
@@ -142,14 +142,14 @@ Dim PenX As Double
 Dim PenY As Double
 Dim InitialPenX As Double
 Dim InitialPenY As Double
-Dim TurtleImage As Shape
+Dim TurtleImage As shape
 Dim Canvas As Chart
-Dim CanvasShape As Shape
+Dim CanvasShape As shape
 Dim IsPenDown As Boolean
 Dim nAngle As Double
 
 Dim PolyPoints As FreeformBuilder
-Dim tempPoly As Shape
+Dim tempPoly As shape
 Dim RefreshLines As Long
 Dim SAoP() As Variant
 Dim PolyNodes As Long
@@ -219,16 +219,16 @@ Public Function InitTurtle(ByVal CanvasName As String, ByVal TurtleName As Strin
   FontWeight = ttFWNormal
   fillColor = ttinvisible
   RefreshLines = 10
-  DrawingMode = ttscreenrefresh
+  DrawingMode = ttScreenRefresh
   IsCurvedPoly = False
   Me.Center
 End Function
 
-Private Sub createSAoPIfNotExists(ByVal x As Double, ByVal y As Double, Optional nodes = 1)
+Private Sub createSAoPIfNotExists(ByVal X As Double, ByVal Y As Double, Optional nodes = 1)
     If PolyNodes = 0 Then
       BufLimit = 1000
       ReDim SAoP(1 To BufLimit)
-      SAoP(1) = Array(x, y)
+      SAoP(1) = Array(X, Y)
       PolyNodes = 1
     End If
     If PolyNodes + nodes > BufLimit Then
@@ -237,36 +237,36 @@ Private Sub createSAoPIfNotExists(ByVal x As Double, ByVal y As Double, Optional
     End If
 End Sub
 
-Private Sub getStepsAngle(ByVal x As Double, ByVal y As Double, ByRef steps As Double, ByRef angle As Double)
+Private Sub getStepsAngle(ByVal X As Double, ByVal Y As Double, ByRef steps As Double, ByRef angle As Double)
 
-  steps = Sqr((x - PenX) ^ 2 + (y - PenY) ^ 2)
-  If y - PenY <> 0 Then
-    angle = Atn((x - PenX) / -(y - PenY)) * 180 / [pi()]
+  steps = Sqr((X - PenX) ^ 2 + (Y - PenY) ^ 2)
+  If Y - PenY <> 0 Then
+    angle = Atn((X - PenX) / -(Y - PenY)) * 180 / [pi()]
   Else
-    If x < PenX Then
+    If X < PenX Then
       angle = -90
     Else
       angle = 90
     End If
   End If
-  If y > PenY Then
+  If Y > PenY Then
     angle = angle + 180
   End If
-  If angle = 0 And y > PenY Then
+  If angle = 0 And Y > PenY Then
     angle = 180
   End If
 End Sub
 
 
 
-Public Sub MoveXY(ByVal x As Double, y As Double)
+Public Sub MoveXY(ByVal X As Double, Y As Double)
   Dim original_angle As Double, steps As Double
   
   original_angle = nAngle
-  getStepsAngle x, y, steps, nAngle
+  getStepsAngle X, Y, steps, nAngle
   Move steps
-  PenX = x
-  PenY = y
+  PenX = X
+  PenY = Y
   nAngle = original_angle
 End Sub
 
@@ -276,7 +276,7 @@ Public Sub Move(ByVal steps As Double)
 ' Add a Line to the drawing
   
 
-  Dim newX As Double, newY As Double, line As Shape, i As Long
+  Dim newX As Double, newY As Double, line As shape, i As Long
   
   If IsCurvedPoly Then
     MoveCurved steps, 0, ttLine
@@ -292,7 +292,7 @@ Public Sub Move(ByVal steps As Double)
       PolyNodes = PolyNodes + 1
       SAoP(PolyNodes) = Array(newX, newY)
          
-      If DrawingMode = ttscreenrefresh Then
+      If DrawingMode = ttScreenRefresh Then
         RecreatePoly
       End If
     End If
@@ -345,7 +345,7 @@ Public Sub Reset()
   Me.Center
   Me.Show
   Me.PenDown
-  Me.DrawingMode = ttscreenrefresh
+  Me.DrawingMode = ttScreenRefresh
   Me.penSize = 1
   Me.fillColor = ttinvisible
   Me.penColor = ttblack
@@ -380,20 +380,20 @@ Public Sub PenDown()
   IsPenDown = True
 End Sub
 
-Public Sub PenHueShift(ByVal shift As Long)
-  penHue = penHue + shift
+Public Sub PenHueShift(ByVal Shift As Long)
+  penHue = penHue + Shift
   cPenColor = HSL2RGB(penHue, penSaturation, penLuminosity)
 
 End Sub
-Public Sub FillHueShift(ByVal shift As Long)
-  fillHue = fillHue + shift
+Public Sub FillHueShift(ByVal Shift As Long)
+  fillHue = fillHue + Shift
   cFillColor = HSL2RGB(fillHue, fillSaturation, fillLuminosity)
 
 End Sub
 
 
 Public Function PenUp() As ShapeRange
-  Dim line As Shape
+  Dim line As shape
   If IsPenDown Then
     If PolyNodes > 0 Then
       If Not (tempPoly Is Nothing) Then
@@ -426,7 +426,7 @@ End Function
 
 
 Public Sub Clear()
-   Dim shpFrame As Shape
+   Dim shpFrame As shape
    Dim intIndex As Integer
    If Not (Canvas Is Nothing) Then
       For Each shpFrame In Canvas.Shapes
@@ -439,11 +439,11 @@ Public Sub Clear()
   PolyNodes = 0
 End Sub
 
-Private Sub FormatShape(shp As Shape, Optional bFill = True)
+Private Sub FormatShape(shp As shape, Optional bFill = True)
   With shp
     
     If CapType <> ttroundcap Or JoinType <> ttMiter Then
-      Dim reference As Variant, refShape As Shape
+      Dim reference As Variant, refShape As shape
       reference = Array("round_round", "flat_round", "square_round", _
                         "round_bevel", "flat_bevel", "square_bevel", _
                         "round_miter", "flat_miter", "square_miter")
@@ -483,7 +483,7 @@ Public Function Group(Optional numShapes As Long, Optional ungroupFirst As Boole
 '
 ' Group all shapes
 '
-  Dim shpFrame As Shape
+  Dim shpFrame As shape
   Dim intIndex As Integer, i As Long
     
   If ungroupFirst Then
@@ -496,9 +496,10 @@ Public Function Group(Optional numShapes As Long, Optional ungroupFirst As Boole
 
   intIndex = 0
   ReDim vntitems(Canvas.Shapes.Count - 1) As Variant
-  For Each shpFrame In Canvas.Shapes
+  For i = 1 To Canvas.Shapes.Count
+      Set shpFrame = Canvas.Shapes(i)
       If shpFrame.Type <> msoPicture Then
-        vntitems(intIndex) = shpFrame.Name
+        vntitems(intIndex) = i
         
         intIndex = intIndex + 1
       End If
@@ -514,8 +515,9 @@ Public Function Group(Optional numShapes As Long, Optional ungroupFirst As Boole
       ReDim Preserve vntitems(numShapes - 1)
     End If
     If UBound(vntitems) > 0 Then
-      Set shpFrame = Canvas.Shapes.Range(vntitems).Group()
-      Set Group = Canvas.Shapes.Range(Array(shpFrame.Name))
+        Set shpFrame = Canvas.Shapes.Range(vntitems).Group()
+        Set Group = Canvas.Shapes.Range(Array(shpFrame.Name))
+ 
     Else
       Set Group = Canvas.Shapes.Range(vntitems(0))
     End If
@@ -526,7 +528,7 @@ Public Function Group(Optional numShapes As Long, Optional ungroupFirst As Boole
 End Function
 
 Public Sub Ungroup()
-  Dim shpFrame As Shape
+  Dim shpFrame As shape
   For Each shpFrame In Canvas.Shapes
     If shpFrame.Type = msoGroup Then
       shpFrame.Ungroup
@@ -547,7 +549,7 @@ Public Sub TurnLeft(ByVal angle As Double)
 
 End Sub
 
-Public Sub PointInDirection(ByVal angle As Integer)
+Public Sub PointInDirection(ByVal angle As Long)
   TurtleImage.rotation = angle - INITIAL_ANGLE
   nAngle = angle
 End Sub
@@ -563,13 +565,13 @@ Public Sub Hide()
   TurtleImage.Visible = msoFalse
 End Sub
 
-Public Sub GoToXY(ByVal x As Double, ByVal y As Double)
+Public Sub GoToXY(ByVal X As Double, ByVal Y As Double)
   If IsPenDown Then
     Me.PenUp
     Me.PenDown
   End If
-  PenX = x
-  PenY = y
+  PenX = X
+  PenY = Y
   RepositionTurtle
 End Sub
 
@@ -588,19 +590,19 @@ Public Property Get CanvasHeight() As Double
     CanvasHeight = Canvas.ChartArea.height
 End Property
 
-Public Property Get x() As Double
-  x = PenX
+Public Property Get X() As Double
+  X = PenX
 End Property
-Public Property Let x(ByVal value As Double)
- PenX = x
+Public Property Let X(ByVal value As Double)
+ PenX = X
  RepositionTurtle
 End Property
 
-Public Property Get y() As Double
-   y = PenY
+Public Property Get Y() As Double
+   Y = PenY
 End Property
-Public Property Let y(ByVal value As Double)
-  PenY = y
+Public Property Let Y(ByVal value As Double)
+  PenY = Y
   RepositionTurtle
 End Property
  
@@ -677,7 +679,7 @@ Public Sub Point()
 End Sub
 
 Public Sub ClosePoints(Optional sendtoBack As Long = 0)
-  Dim line As Shape, i As Long
+  Dim line As shape, i As Long
   If Not (PolyPoints Is Nothing) Then
     PolyPoints.AddNodes msoSegmentLine, msoEditingCorner, InitialPenX, InitialPenY 'close the poly
     Set line = PolyPoints.ConvertToShape
@@ -693,24 +695,31 @@ Public Sub ClosePoints(Optional sendtoBack As Long = 0)
 End Sub
 
 Public Sub Ellipse(ByVal DiameterAcross As Double, Optional DiameterFrontBack)
-  Dim shp As Shape
+  Dim shp As shape
   If IsPenDown Then
     If IsMissing(DiameterFrontBack) Then DiameterFrontBack = DiameterAcross
-    Set shp = Canvas.Shapes.AddShape(msoShapeOval, Me.x - DiameterFrontBack / 2, Me.y - DiameterAcross / 2, DiameterFrontBack, DiameterAcross)
+    Set shp = Canvas.Shapes.AddShape(msoShapeOval, Me.X - DiameterFrontBack / 2, Me.Y - DiameterAcross / 2, DiameterFrontBack, DiameterAcross)
     shp.rotation = TurtleImage.rotation
     FormatShape shp
+    If DrawingMode = ttScreenRefresh Then
+      NumLines = NumLines + 1
+      If NumLines > RefreshLines Then
+        DoEvents
+        NumLines = 0
+      End If
+    End If
   End If
 End Sub
 
 Public Sub Arc(ByVal DiameterAcross As Double, ByVal DiameterFrontBack As Double, ByVal StartAngle As Double, ByVal EndAngle As Double, ByVal ArcType As ttArcType)
-  Dim shp As Shape
+  Dim shp As shape
   If IsPenDown Then
     If ArcType = TTARC Then
-      Set shp = Canvas.Shapes.AddShape(msoShapeArc, Me.x, Me.y - DiameterAcross / 2, DiameterFrontBack / 2, DiameterAcross / 2)
+      Set shp = Canvas.Shapes.AddShape(msoShapeArc, Me.X, Me.Y - DiameterAcross / 2, DiameterFrontBack / 2, DiameterAcross / 2)
     ElseIf ArcType = ttsector Then
-      Set shp = Canvas.Shapes.AddShape(msoShapePie, Me.x - DiameterFrontBack / 2, Me.y - DiameterAcross / 2, DiameterFrontBack, DiameterAcross)
+      Set shp = Canvas.Shapes.AddShape(msoShapePie, Me.X - DiameterFrontBack / 2, Me.Y - DiameterAcross / 2, DiameterFrontBack, DiameterAcross)
     ElseIf ArcType = ttSegment Then
-      Set shp = Canvas.Shapes.AddShape(msoShapeChord, Me.x - DiameterFrontBack / 2, Me.y - DiameterAcross / 2, DiameterFrontBack, DiameterAcross)
+      Set shp = Canvas.Shapes.AddShape(msoShapeChord, Me.X - DiameterFrontBack / 2, Me.Y - DiameterAcross / 2, DiameterFrontBack, DiameterAcross)
     End If
     shp.Adjustments.Item(1) = StartAngle - INITIAL_ANGLE
     shp.Adjustments.Item(2) = EndAngle - INITIAL_ANGLE
@@ -742,10 +751,33 @@ Public Function ColorPicker(Optional copy = False)
   End If
 End Function
 
+Public Function ColorDropper(Optional copy = False)
+  Dim document As HTMLDocument, color As Long
+  Dim Red As Long, Green As Long, Blue As Long
+  
+  Red = Me.fillColor Mod 256
+  Green = (Me.fillColor \ 256) Mod 256
+  Blue = Me.fillColor \ 65536
+  If Red = -1 Then
+    Red = 255
+    Green = 255
+    Blue = 255
+  End If
+  If Me.fillColor <> -1 Then
+    frmEyeDropper.imgColor.BackColor = Me.fillColor
+  End If
+  frmEyeDropper.Show vbModal
+  ColorDropper = frmEyeDropper.imgColor.BackColor
+  If copy Then
+      Set document = CreateObject("HtmlFile")
+      document.parentWindow.clipboardData.SetData "text", Str(ColorDropper)
+  End If
+End Function
+
 Public Sub WriteText(txt As String)
-  Dim shp As Shape
+  Dim shp As shape
  
-  Set shp = Canvas.Shapes.AddTextbox(msoTextOrientationHorizontal, Me.x, Me.y, 1, 1)
+  Set shp = Canvas.Shapes.AddTextbox(msoTextOrientationHorizontal, Me.X, Me.Y, 1, 1)
   shp.TextFrame2.TextRange.Characters.Text = txt
   shp.TextFrame2.TextRange.Font.Name = FontName
   shp.TextFrame2.TextRange.Font.Size = FontSize
@@ -762,8 +794,8 @@ Public Sub WriteText(txt As String)
   shp.TextFrame2.TextRange.Font.Fill.ForeColor.RGB = FontColor
   shp.TextFrame2.AutoSize = msoAutoSizeShapeToFitText
   shp.TextFrame2.WordWrap = msoFalse
-  shp.left = Me.x - shp.width / 2
-  shp.top = Me.y - shp.height / 2
+  shp.left = Me.X - shp.width / 2
+  shp.top = Me.Y - shp.height / 2
   shp.rotation = TurtleImage.rotation
 
 
@@ -771,7 +803,7 @@ End Sub
 
 
 Sub SaveCanvas(fileName As String, ImageFormat As ttImageFormat)
-  Dim tmpVisible As Boolean, shpFrame As Shape
+  Dim tmpVisible As Boolean, shpFrame As shape
   
   
   If Canvas.Parent.Name = "Canvas2" Then
@@ -916,7 +948,7 @@ Private Sub arcCircle(ByVal steps As Double, ByVal radius As Double)
         PolyNodes = PolyNodes + 1
         SAoP(PolyNodes) = Array(xe, ye)
        
-        If DrawingMode = ttscreenrefresh Then
+        If DrawingMode = ttScreenRefresh Then
           RecreatePoly
         End If
       End If
@@ -925,15 +957,15 @@ Private Sub arcCircle(ByVal steps As Double, ByVal radius As Double)
       RepositionTurtle
 End Sub
 
-Sub MoveXYCurved(ByVal x As Double, ByVal y As Double, ByVal radius As Double, _
+Sub MoveXYCurved(ByVal X As Double, ByVal Y As Double, ByVal radius As Double, _
     Optional curveType As ttCurveType = ttHalfEllipse)
   Dim original_angle As Double, steps As Double
   
   original_angle = nAngle
-  getStepsAngle x, y, steps, nAngle
+  getStepsAngle X, Y, steps, nAngle
   MoveCurved steps, radius, curveType
-  PenX = x
-  PenY = y
+  PenX = X
+  PenY = Y
   nAngle = original_angle
     
 End Sub
@@ -1054,7 +1086,7 @@ Public Sub MoveTangent(ByVal StepsForward As Double, ByVal StepsLeft As Double, 
         ByVal FirstAngleOffset As Double, ByVal SecondAngleOffset As Double, _
         Optional factor1, Optional factor2)
   Dim ellipse_angle As Double, kappa As Double, chord As Double
-  Dim x As Double, y As Double, xe As Double, ye As Double, ox As Double, oy As Double
+  Dim X As Double, Y As Double, xe As Double, ye As Double, ox As Double, oy As Double
   Dim cx1 As Double, cy1 As Double, cx2 As Double, cy2 As Double
   Dim originalAngle As Double, restoreAngle As Boolean
   
@@ -1072,8 +1104,8 @@ Public Sub MoveTangent(ByVal StepsForward As Double, ByVal StepsLeft As Double, 
   chord = Sqr(StepsForward ^ 2 + StepsLeft ^ 2)
   'turn in direction of the ellipse co-vertex
   nAngle = nAngle - ellipse_angle
-  x = Me.x
-  y = Me.y
+  X = Me.X
+  Y = Me.Y
   
   ' control points use by default
   ' the proportion of the ellipse
@@ -1094,11 +1126,11 @@ Public Sub MoveTangent(ByVal StepsForward As Double, ByVal StepsLeft As Double, 
   Else
     oy = StepsForward * factor2
   End If
-  xe = x + Math.Cos((nAngle - INITIAL_ANGLE) * [pi()] / 180) * chord          ' x-end
-  ye = y + Math.Sin((nAngle - INITIAL_ANGLE) * [pi()] / 180) * chord
+  xe = X + Math.Cos((nAngle - INITIAL_ANGLE) * [pi()] / 180) * chord          ' x-end
+  ye = Y + Math.Sin((nAngle - INITIAL_ANGLE) * [pi()] / 180) * chord
 
-  cx1 = x - Math.Sin([pi()] / 180 * (90 - nAngle - ellipse_angle - FirstAngleOffset)) * oy
-  cy1 = y - Math.Cos([pi()] / 180 * (90 - nAngle - ellipse_angle - FirstAngleOffset)) * oy
+  cx1 = X - Math.Sin([pi()] / 180 * (90 - nAngle - ellipse_angle - FirstAngleOffset)) * oy
+  cy1 = Y - Math.Cos([pi()] / 180 * (90 - nAngle - ellipse_angle - FirstAngleOffset)) * oy
   
   cx2 = xe - Math.Cos([pi()] / 180 * (90 - nAngle - ellipse_angle - SecondAngleOffset)) * ox
   cy2 = ye + Math.Sin([pi()] / 180 * (90 - nAngle - ellipse_angle - SecondAngleOffset)) * ox
@@ -1106,7 +1138,7 @@ Public Sub MoveTangent(ByVal StepsForward As Double, ByVal StepsLeft As Double, 
     NumLines = NumLines + 1
   If IsPenDown Then
     IsCurvedPoly = True
-    createSAoPIfNotExists x, y, 3
+    createSAoPIfNotExists X, Y, 3
     
     PolyNodes = PolyNodes + 1
     SAoP(PolyNodes) = Array(cx1, cy1)
@@ -1117,7 +1149,7 @@ Public Sub MoveTangent(ByVal StepsForward As Double, ByVal StepsLeft As Double, 
     PolyNodes = PolyNodes + 1
     SAoP(PolyNodes) = Array(xe, ye)
     
-    If DrawingMode = ttscreenrefresh Then
+    If DrawingMode = ttScreenRefresh Then
       RecreatePoly
     End If
 
@@ -1133,17 +1165,17 @@ Public Sub MoveTangent(ByVal StepsForward As Double, ByVal StepsLeft As Double, 
   End If
 End Sub
 
-Public Sub MoveXYBezier(ByVal x As Double, ByVal y As Double, ByVal angle1 As Double, _
+Public Sub MoveXYBezier(ByVal X As Double, ByVal Y As Double, ByVal angle1 As Double, _
         ByVal distance1 As Double, ByVal angle2 As Double, _
         ByVal distance2 As Double)
 
   Dim original_angle As Double, steps As Double
   
   original_angle = nAngle
-  getStepsAngle x, y, steps, nAngle
+  getStepsAngle X, Y, steps, nAngle
   MoveBezier steps, angle1, distance1, angle2, distance2
-  PenX = x
-  PenY = y
+  PenX = X
+  PenY = Y
   nAngle = original_angle
 
 
@@ -1153,7 +1185,7 @@ Public Sub MoveBezier(ByVal steps As Double, angle1 As Double, _
         ByVal distance1 As Double, ByVal angle2 As Double, _
         ByVal distance2 As Double)
   
-  Dim x As Double, y As Double, xe As Double, ye As Double, ox1 As Double, oy1 As Double
+  Dim X As Double, Y As Double, xe As Double, ye As Double, ox1 As Double, oy1 As Double
   Dim ox2 As Double, oy2 As Double
   Dim cx1 As Double, cy1 As Double, cx2 As Double, cy2 As Double
   Dim originalAngle As Double, restoreAngle As Boolean
@@ -1169,8 +1201,8 @@ Public Sub MoveBezier(ByVal steps As Double, angle1 As Double, _
     restoreAngle = True
   End If
   
-  x = Me.x
-  y = Me.y
+  X = Me.X
+  Y = Me.Y
   
   ' control points
   
@@ -1183,11 +1215,11 @@ Public Sub MoveBezier(ByVal steps As Double, angle1 As Double, _
   oy2 = distance2 * Sin((nAngle - INITIAL_ANGLE + angle2) * [pi()] / 180)
   
   
-  xe = x + Math.Cos((nAngle - INITIAL_ANGLE) * [pi()] / 180) * steps          ' x-end
-  ye = y + Math.Sin((nAngle - INITIAL_ANGLE) * [pi()] / 180) * steps
+  xe = X + Math.Cos((nAngle - INITIAL_ANGLE) * [pi()] / 180) * steps          ' x-end
+  ye = Y + Math.Sin((nAngle - INITIAL_ANGLE) * [pi()] / 180) * steps
 
-  cx1 = x + ox1
-  cy1 = y + oy1
+  cx1 = X + ox1
+  cy1 = Y + oy1
   
   cx2 = xe + ox2
   cy2 = ye + oy2
@@ -1195,7 +1227,7 @@ Public Sub MoveBezier(ByVal steps As Double, angle1 As Double, _
     NumLines = NumLines + 1
   If IsPenDown Then
     IsCurvedPoly = True
-    createSAoPIfNotExists x, y, 3
+    createSAoPIfNotExists X, Y, 3
     
     PolyNodes = PolyNodes + 1
     SAoP(PolyNodes) = Array(cx1, cy1)
@@ -1206,7 +1238,7 @@ Public Sub MoveBezier(ByVal steps As Double, angle1 As Double, _
     PolyNodes = PolyNodes + 1
     SAoP(PolyNodes) = Array(xe, ye)
     
-    If DrawingMode = ttscreenrefresh Then
+    If DrawingMode = ttScreenRefresh Then
       RecreatePoly
     End If
 
@@ -1278,7 +1310,7 @@ End Property
 
 Private Function get_xywh(sr As ShapeRange) As Variant
    ' calculate new top and left for printing
-  Dim shp As Shape, xmin As Double, ymin As Double, vert1 As Variant, vert2 As Variant
+  Dim shp As shape, xmin As Double, ymin As Double, vert1 As Variant, vert2 As Variant
   Dim rotation As Double, sin_ang As Double, xmax As Double, ymax As Double
   Dim cos_ang As Double, i As Long, cx As Double, cy As Double
   xmin = sr.left
