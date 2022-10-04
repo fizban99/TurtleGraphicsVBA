@@ -24,6 +24,7 @@ The code for all these samples is available in the [samples.bas](https://github.
 <img src="sierpinski.png" width="200"/>
 <img src="spiral-bw.png" width="200"/>
 <img src="spiral-rainbow.png" width="200"/>
+<img src="squared_knot.png" width="200"/>
 <img src="triquetra.png" width="200"/>
 
 
