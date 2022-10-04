@@ -1701,7 +1701,7 @@ Sub chussy_mandala()
       End With
     Next i
 
-  With shapetransformer("Chusnito")
+  With shapetransformer("chussy")
     .Translate y:=-170
     .Rotate 36, copyandrepeat:=10
     .Translate steps:=60, angle:=90
