@@ -20,6 +20,12 @@ The code for all these samples is available in the [samples.bas](https://github.
 <img src="phyllotaxis2.png" width="200"/>
 <img src="pookkalam1.png" width="200"/>
 <img src="pookkalam2.png" width="200"/>
+<img src="sierpinski.png" width="200"/>
+<img src="spiral-bw.png" width="200"/>
+<img src="spiral-rainbow.png" width="200"/>
+
+
+
 
 
 
