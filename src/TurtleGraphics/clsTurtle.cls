@@ -224,7 +224,7 @@ Public Function InitTurtle(ByVal CanvasName As String, ByVal TurtleName As Strin
   Me.Center
 End Function
 
-Private Sub createSAoPIfNotExists(ByVal X As Double, ByVal Y As Double, Optional nodes = 1)
+Private Sub createSAoPIfNotExists(ByVal X As Double, ByVal Y As Double, Optional nodes As Long = 1)
     If PolyNodes = 0 Then
       BufLimit = 1000
       ReDim SAoP(1 To BufLimit)
@@ -439,7 +439,7 @@ Public Sub Clear()
   PolyNodes = 0
 End Sub
 
-Private Sub FormatShape(shp As shape, Optional bFill = True)
+Private Sub FormatShape(shp As shape, Optional bFill As Boolean = True)
   With shp
     
     If CapType <> ttroundcap Or JoinType <> ttMiter Then
@@ -549,7 +549,7 @@ Public Sub TurnLeft(ByVal angle As Double)
 
 End Sub
 
-Public Sub PointInDirection(ByVal angle As Long)
+Public Sub PointInDirection(ByVal angle As Double)
   TurtleImage.rotation = angle - INITIAL_ANGLE
   nAngle = angle
 End Sub
@@ -729,7 +729,7 @@ Public Sub Arc(ByVal DiameterAcross As Double, ByVal DiameterFrontBack As Double
 End Sub
 
 
-Public Function ColorPicker(Optional copy = False)
+Public Function ColorPicker(Optional copy As Boolean = False)
   Dim document As HTMLDocument, color As Long
   Dim Red As Long, Green As Long, Blue As Long
   
@@ -751,7 +751,7 @@ Public Function ColorPicker(Optional copy = False)
   End If
 End Function
 
-Public Function ColorDropper(Optional copy = False)
+Public Function ColorDropper(Optional copy As Boolean = False)
   Dim document As HTMLDocument, color As Long
   Dim Red As Long, Green As Long, Blue As Long
   
@@ -846,9 +846,9 @@ Sub SaveCanvas(fileName As String, ImageFormat As ttImageFormat)
     s.Select
     Excel.Selection.Cut
     tt.CanvasColor = ttinvisible
-    canvas_copy.Chart.ChartArea.width = xywh(2)
+    canvas_copy.Chart.ChartArea.width = xywh(2) + 2
     'canvas_copy.height = h
-    canvas_copy.Chart.ChartArea.height = xywh(3)
+    canvas_copy.Chart.ChartArea.height = xywh(3) + 2
     
     canvas_copy.Chart.Paste
     canvas_copy.Chart.Shapes(canvas_copy.Chart.Shapes.Count).left = l
@@ -1317,7 +1317,10 @@ Private Function get_xywh(sr As ShapeRange) As Variant
   ymin = sr.top
   xmax = sr.left + sr.width
   ymax = sr.top + sr.height
-  
+  If sr.Type <> msoGroup Then
+    get_xywh = Array(xmin, ymin, xmax - xmin, ymax - ymin)
+    Exit Function
+  End If
   For Each shp In sr.GroupItems
     rotation = shp.rotation / 180 * [pi()]
     cx = shp.left + shp.width / 2
