@@ -15,6 +15,9 @@ The code for all these samples is available in the [samples.bas](https://github.
 <img src="flower-yellow.png" width="200"/>
 <img src="framed_hexagon.png" width="200"/>
 <img src="intertwined_star.png" width="200"/>
+<img src="islamic_pattern1.png" width="200"/>
+<img src="islamic_pattern3.png" width="200"/>
+<img src="islamic_pattern4.png" width="200"/>
 <img src="koch.png" width="200"/>
 <img src="mandala_frame.png" width="200"/>
 <img src="mandala-simple.png" width="200"/>
@@ -28,6 +31,9 @@ The code for all these samples is available in the [samples.bas](https://github.
 <img src="spiral-rainbow.png" width="200"/>
 <img src="squared_knot.png" width="200"/>
 <img src="triquetra.png" width="200"/>
+<img src="zentangle_spiral.png" width="200"/>
+<img src="zentangle_spiral2.png" width="200"/>
+<img src="zentangle_spiral3.png" width="200"/>
 
 
 
