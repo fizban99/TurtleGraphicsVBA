@@ -15,6 +15,7 @@ The code for all these samples is available in the [samples.bas](https://github.
 <img src="flower-yellow.png" width="200"/>
 <img src="framed_hexagon.png" width="200"/>
 <img src="intertwined_star.png" width="200"/>
+<img src="islamic_pattern_a_method1.png" width="200"/>
 <img src="islamic_pattern1.png" width="200"/>
 <img src="islamic_pattern3.png" width="200"/>
 <img src="islamic_pattern4.png" width="200"/>
